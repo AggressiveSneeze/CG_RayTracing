@@ -17,7 +17,7 @@
 #ifdef WIN32
 #include <OpenMesh/Core/Math/VectorT.hh>
 #else
-#include <OpenMesh/Core/Geometry/VectorT.hh>
+#include </cs/course/2013/cg/OpenMesh/include/OpenMesh/Core/Geometry/VectorT.hh>
 #endif
 
 

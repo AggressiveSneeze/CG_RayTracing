@@ -23,4 +23,10 @@
  +-intersect
  +-הכל
  +
+ 
+ 
+ 
+ Camera looks at scene. 
+ 
+ For each object in scene, perform ray tracing using function 
 

@@ -3,7 +3,7 @@
 //  cg-projects
 //
 //  Created by HUJI Computer Graphics course staff, 2012-2013.
-//  Purpose : Declerae and implement classes representing ambient and
+//  Purpose : Declaration and implement classes representing ambient and
 //            point light sources.
 //
 
@@ -20,7 +20,7 @@
 
 
 //////////////////////////////
-// Class Decleration        //
+// Class Declaration        //
 //////////////////////////////
 
 class AmbientLight 

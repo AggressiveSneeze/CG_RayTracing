@@ -36,7 +36,7 @@ public:
   Camera();
 	
 public:
-  // constructor - create a camera with the given paramters
+  // constructor - create a camera with the given parameters
   Camera(Point3d & pos,Point3d & coi, Vector3d & up, double fov, size_t samples_per_pixel = 1);
 
   // render - create a bitmap image with the given properties from the given scene

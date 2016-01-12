@@ -40,10 +40,11 @@ Color3d calcReflection(const Ray& ray, const Point3d& P, const Vector3d& N, cons
 
 }
 
-Color3d calcRefraction(const Ray& ray, const Point3d& P, const Vector3d& N, const Object& object, double vis = 1.0) const {
+Color3d calcRefraction(const
+ Ray& ray, const Point3d& P, const Vector3d& N, const Object& object, double vis = 1.0) const {
     //snell's law
 
-
+    
 }
 
 

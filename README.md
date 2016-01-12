@@ -30,3 +30,8 @@
  
  For each object in scene, perform ray tracing using function 
 
+
+
+For snell's law:
+
+![alt tag](http://i.imgur.com/6loaoVZ.png)

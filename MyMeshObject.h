@@ -54,6 +54,9 @@ private:
   Sphere*   _boundingSphere;  // The sphere bounding the object   //
   Point3d   _center;          // The center of the mesh           //
 
+  //TODO: wouldn't centre be contained within bounding sphere?
+
+
   // Handle to a polygon pointer property for a MyMesh's face //
   OpenMesh::FPropHandleT<Polygon*> _fp_polygon_handle;
 };

@@ -19,7 +19,8 @@ int Sphere::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d& P
     if(t0>=0 && t0<=tMax) {
         t=t0;
         P=ray.O()+t*ray.D();
-        //TODO how to calculate the normal and texcolor
+        N=P-_C;
+        //TODO texcolor
         return 1;
     }
     if(t1>=0 && t1<=tMax) {

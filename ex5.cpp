@@ -9,7 +9,8 @@
 #include "MyMesh.h"
 #include "MyMeshObject.h"
 
-#include <stdio.h>
+//#include <stdio.h>
+#include <iostream>
 
 #include "SceneChooser.h"
 

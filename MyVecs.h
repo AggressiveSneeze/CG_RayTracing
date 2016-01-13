@@ -16,8 +16,13 @@
 // for some reason, in windows the file is located on a different location  //
 #ifdef WIN32
 #include <OpenMesh/Core/Math/VectorT.hh>
+#endif
+#ifdef APPLE
+#include </usr/local/Cellar/open-mesh/4.1/include/OpenMesh/Core/Geometry/VectorT.hh>
 #else
-#include </cs/course/2013/cg/OpenMesh/include/OpenMesh/Core/Geometry/VectorT.hh>
+//#include </cs/course/2013/cg/OpenMesh/include/OpenMesh/Core/Geometry/VectorT.hh>
+#include <OpenMesh/Core/Geometry/VectorT.hh>
+
 #endif
 
 

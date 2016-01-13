@@ -172,10 +172,6 @@ struct Scene1 : public Scene
 		plane[1] = Point3d(-x,z,x);
 		plane[2] = Point3d(x,z,x);
 		plane[3] = Point3d(x,z,-x);
-		plane_uv[0] = Point2d(0,0);
-		plane_uv[1] = Point2d(0,1);
-		plane_uv[2] = Point2d(1,1);
-		plane_uv[3] = Point2d(1,0);
 		Polygon * poly = new Polygon(plane,plane_uv);
 		poly->diffuse() = iron;
 		poly->reflection() = white * 0.5;

@@ -55,8 +55,7 @@ private:
   Point3d   _center;          // The center of the mesh           //
 
   //TODO: wouldn't centre be contained within bounding sphere?
-
-
+  int MyMeshObject::check_triangle(IN MyMesh::FaceHandle fhandle, IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d& P, OUT Vector3d& N);
   // Handle to a polygon pointer property for a MyMesh's face //
   OpenMesh::FPropHandleT<Polygon*> _fp_polygon_handle;
 };

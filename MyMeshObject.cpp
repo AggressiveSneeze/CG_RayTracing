@@ -5,6 +5,7 @@
 #include "MyMeshObject.h"
 #include "MyMesh.h"
 #include "sphere.h"
+#include <vector>
 MyMeshObject::MyMeshObject(MyMesh & mesh): _mesh(mesh)) {
 
 	//maybe something here to compute bounding sphere and centre.
@@ -16,30 +17,22 @@ MyMeshObject::MyMeshObject(MyMesh & mesh): _mesh(mesh)) {
 }
 
 
-int intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d& P, 
-								OUT Vector3d& N, OUT Color3d& texColor) {
-
-	//check every triangle in the mesh using the bookmarked algo.
-	//normal can be computed by accessing the particular face?(does this exist in openmesh?)
-	//Is that it?
-
-};
-
 void MyMeshObject::calculateBoundingSphere() {
 
 	Vector3d center;
 	Vector3d xmin,xmax,ymin,ymax,zmin,zmax;
-	xmin=ymin=zmin=Vector3d(1.0,1.0,1.0)*INF;
-	xmax=ymin=zmin=Vector3d(-1.0,-1.0,-1.0)*INF;
+	//TODO: Is this the right way?
+	xmin=ymin=zmin=Vector3d.vectorize(INF);
+	xmax=ymin=zmin=Vector3d.vectorize(-INF);
 
 	for (MyMesh::VertexIter v_it=_mesh.vertices_begin();
 					v_it!=_mesh.vertices_end(); ++v_it) {
-		if (v_it.x < xmin.x) xmin = _mesh.point(v_it);
-		if (v_it.x > xmax.x) xmax = _mesh.point(v_it);
-		if (v_it.y < ymin.y) ymin = _mesh.point(v_it);
-		if (v_it.y > ymax.y) ymax = _mesh.point(v_it);
-		if (v_it.z < zmin.z) zmin = _mesh.point(v_it);
-		if (v_it.z > zmax.z) zmax = _mesh.point(v_it);
+		if (_mesh.point(v_it)[0] < xmin[0]) xmin = _mesh.point(v_it);
+		if (_mesh.point(v_it)[0] > xmax[0]) xmax = _mesh.point(v_it);
+		if (_mesh.point(v_it)[1] < ymin.[1]) ymin = _mesh.point(v_it);
+		if (_mesh.point(v_it)[1] > ymax.[1]) ymax = _mesh.point(v_it);
+		if (_mesh.point(v_it)[2] < zmin[2]) zmin = _mesh.point(v_it);
+		if (_mesh.point(v_it)[2] > zmax[2]) zmax = _mesh.point(v_it);
 	}
 
 	float x_span=(xmax-xmin).sqrnorm();
@@ -72,7 +65,7 @@ void MyMeshObject::calculateBoundingSphere() {
 			sqRad=radius*radius;
 			offset=r-radius;
 			//TODO:is this line okay using the defined operators?
-			center=(radius*center+offset*_mesh.point(v_it))/r;
+			center=(center*radius+_mesh.point(v_it)*offset)/r;
 		}
 	}
 	//now we have center and radius.
@@ -86,7 +79,8 @@ void MyMeshObject::calculateBoundingSphere() {
 }
 
 
-int MyMeshObject::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d& P, OUT Vector3d& N, OUT Color3d& texColor) {
+int MyMeshObject::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d& P, OUT Vector3d& N,
+																				OUT Color3d& texColor) {
 
 	//check bounding sphere first. early exit if ray doesn't even go through bounding sphere.
 	if(!_boundingSphere->intersect(ray,tMax,t,P,N,texColor)) return 0;
@@ -94,10 +88,75 @@ int MyMeshObject::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Poin
 	//for every face
 	//check intersection between ray and triangle.
 	//have to go through every face in case there is a closer one.
+	float min_t=INF;
+	bool intersection=false;
+	MyMesh::FaceHandle fHandle;
+	double *temp_t;
+	Point3d *temp_P;
+	Vector3d *temp_N;
+	for (MyMesh::FaceIter f_it=_mesh.faces_begin(); f_it!=_mesh.faces_end(); ++f_it) {
+		//get handle of current face
+		fHandle=f_it.handle();
+		//check triangle, why can't this method be accessed?
+		if (check_triangle(fHandle,ray,tMax,temp_t,temp_P,temp_N)) {
+			if (*temp_t<min_t) {
+				//upgrade our local closest
+				min_t=*temp_t;
+				//upgrade our externals
+				t=*temp_t;
+				P=*temp_P;
+				N=*temp_N;
+				if (!intersection) intersection=true;
+			}
+		}
+	}
+	if (intersection) return 1;
+	else return 0;
+}
 
+int MyMeshObject::check_triangle(IN MyMesh::FaceHandle fhandle, IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d& P, OUT Vector3d& N) {
 
+	//get the vertices of triangle:
+	MyMesh::FaceVertexIter fvIter;
+	//MyMesh::VertexHandle vHandle;
+	std::vector<Point3d> verts;
+	//ported from http://www.cs.virginia.edu/~gfx/Courses/2003/ImageSynthesis/papers/Acceleration/Fast%20MinimumStorage%20RayTriangle%20Intersection.pdf
+	//TODO: is this okay?
+	for (fvIter=_mesh.fv_iter(fhandle);fvIter;++fvIter) {
+		verts.push_back(_mesh.point(fvIter));
+	}
+	//find vectors for two edges sharing vert0
+	Vector3d edge1=verts[1]-verts[0],edge2=verts[2]-verts[0];
+	//begin calculating determined - also used to calculate U parameter.
+	Vector3d pvec=ray.D()%edge2; //cross product
+	//if determinant is near zero, ray lies in plane of triangle.
+	float det=edge1|pvec;
+	//not sure how to determine which side of triangle is inside/outside mesh, so using non culling branch for the time
+	//being.
+	if (det > -EPS && det<EPS) return 0;
 
+	float inv_det=1.0/det;
 
+	//calculate distance from vert0 to ray origin.
+	Vector3d tvec=ray.O()-verts[0];
+	//calculate U parameter and test bounds
+	float u=(tvec|pvec)*inv_det;
+	if (u<0.0 || u>1.0) return 0;
 
+	//prepare to test v parameter
+	Vector3d qvec=tvec%edge1;
+	//calculate v parameter and test bounds
+	float v=(ray.D()|qvec)*inv_det;
+	if(v<0.0 || v>1.0) return 0;
+	//calculate t since ray intersects triangle
+	t=(edge2|qvec)*inv_det;
+	//port ends here, james continuing:
+
+	//point of intersection is given by substitution of u,v into the formula for barycentric.
+	P=verts[0]*(1-u-v)+verts[1]*u+verts[2]*v;
+	//TODO: Think about this. This is the face normal. Is it okay as the normal from the point since the triangle
+	//																				is a slice of the same plane?
+	N=_mesh.normal(fhandle);
+	return 1;
 
 }

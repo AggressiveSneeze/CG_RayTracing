@@ -1,1 +1,40 @@
 #include "polygon.h"
+
+//constructors
+
+Polygon::Polygon(vector<Point3d> & vertices): _vertices(vertices) {};
+
+
+
+void Polygon::triangulate() {
+    for (int i=1;i<_vertices.size()-1;i++) {
+        _triangles.push_back(new Triangle(vertices[0],vertices[i],vertices[i+1]));
+    }
+}
+
+int Polygon::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d& P, OUT Vector3d& N, OUT Color3d& texColor) {
+
+    bool intersection=false;
+    float min_t=INF;
+    double temp_t;
+    Point3d temp_P;
+    Vector3d temp_N;
+    //find the triangles
+    triangulate();
+    //check intersection for every triangle
+    for(auto triangle:_triangles) {
+        if (triangle->intersect(ray,tMax,temp_t,temp_P,temp_N)) {
+            if (temp_t<min_t) {
+                //upgrade our local closest
+                min_t=temp_t;
+                //upgrade our externals
+                t=temp_t;
+                P=temp_P;
+                N=temp_N;
+                if (!intersection) intersection=true;
+            }
+        }
+    }
+    if (intersection) return 1;
+    else return 0;
+};

@@ -6,7 +6,7 @@
 #include "MyMesh.h"
 #include "sphere.h"
 #include <vector>
-MyMeshObject::MyMeshObject(MyMesh & mesh): _mesh(mesh)) {
+MyMeshObject::MyMeshObject(MyMesh & mesh): _mesh(mesh) {
 
 	//maybe something here to compute bounding sphere and centre.
 	//is it really necessary? Can't just check if ray intersects with any of the triangles?
@@ -78,6 +78,7 @@ void MyMeshObject::calculateBoundingSphere() {
 
 }
 
+//TODO: Refactor to use method within triangle object
 
 int MyMeshObject::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d& P, OUT Vector3d& N,
 																				OUT Color3d& texColor) {
@@ -91,25 +92,29 @@ int MyMeshObject::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Poin
 	float min_t=INF;
 	bool intersection=false;
 	MyMesh::FaceHandle fHandle;
-	double *temp_t;
-	Point3d *temp_P;
-	Vector3d *temp_N;
+	double temp_t;
+	Point3d temp_P;
+	Vector3d temp_N;
+	//make sure mesh gets normals.
+	_mesh.request_face_normals();
+	_mesh.update_face_normals();
 	for (MyMesh::FaceIter f_it=_mesh.faces_begin(); f_it!=_mesh.faces_end(); ++f_it) {
 		//get handle of current face
 		fHandle=f_it.handle();
 		//check triangle, why can't this method be accessed?
 		if (check_triangle(fHandle,ray,tMax,temp_t,temp_P,temp_N)) {
-			if (*temp_t<min_t) {
+			if (temp_t<min_t) {
 				//upgrade our local closest
-				min_t=*temp_t;
+				min_t=temp_t;
 				//upgrade our externals
-				t=*temp_t;
-				P=*temp_P;
-				N=*temp_N;
+				t=temp_t;
+				P=temp_P;
+				N=temp_N;
 				if (!intersection) intersection=true;
 			}
 		}
 	}
+	_mesh.release_face_normals();
 	if (intersection) return 1;
 	else return 0;
 }
@@ -150,12 +155,14 @@ int MyMeshObject::check_triangle(IN MyMesh::FaceHandle fhandle, IN Ray& ray, IN 
 	if(v<0.0 || v>1.0) return 0;
 	//calculate t since ray intersects triangle
 	t=(edge2|qvec)*inv_det;
-	//port ends here, james continuing:
+	//confirm that t isn't too big (i.e triangle isn't too far away)
+	if (t>tMax) return 0;
 
+	//port ends here, james continuing:
 	//point of intersection is given by substitution of u,v into the formula for barycentric.
 	P=verts[0]*(1-u-v)+verts[1]*u+verts[2]*v;
 	//TODO: Think about this. This is the face normal. Is it okay as the normal from the point since the triangle
-	//																				is a slice of the same plane?
+	//TODO:																				is a slice of the same plane?
 	N=_mesh.normal(fhandle);
 	return 1;
 

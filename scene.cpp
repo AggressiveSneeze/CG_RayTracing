@@ -69,9 +69,9 @@ Color3d Scene::trace_ray(Ray ray, double vis = 1.0) const {
     {
         //Ray in the direcation of the light from the point P
         Ray ray = Ray(nearest_obj_props.P, (*it)->_position - nearest_obj_props.P);
-        bool isIntesect = findNearestObject(ray, nearest_obj_props.object, nearest_obj_props.t,
+        bool intersect = findNearestObject(ray, nearest_obj_props.object, nearest_obj_props.t,
                                             nearest_obj_props.P, nearest_obj_props.N, nearest_obj_props.texColor);
-        if(!isIntersect)
+        if(!intersect)
         {
             //ToDO: calculate phong
         }

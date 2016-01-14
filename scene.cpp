@@ -65,23 +65,28 @@ Color3d Scene::trace_ray(Ray ray, double vis = 1.0) const {
         specular term: obj.specularColor * lightColor *<R,L>^obj.shininess
      */
     Color3d ambient = (*nearest_obj_props.object)->getAmbient() * _ambientLight._color;
+    Color3d diffuse = COLOR_BLACK;
+    Color3d specular = COLOR_BLACK;
     for(vector<PointLight *>::const_iterator it = _lights.cbegin(); it != _lights.cend(); it++)
     {
         //Ray in the direcation of the light from the point P
-        Ray ray = Ray(nearest_obj_props.P, (*it)->_position - nearest_obj_props.P);
+        Vector3d lightDir = (*it)->_position - nearest_obj_props.P;
+        Ray ray = Ray(nearest_obj_props.P, lightDir);
+        Vector3d Rl = (ray(1) - 2*((nearest_obj_props.N|ray(1)) * nearest_obj_props.N)).normalize();
         bool intersect = findNearestObject(ray, nearest_obj_props.object, nearest_obj_props.t,
                                             nearest_obj_props.P, nearest_obj_props.N, nearest_obj_props.texColor);
-        if(!intersect)
+        if(intersect)
         {
-            //ToDO: calculate phong
+            continue;
         }
         else
         {
-
+          diffuse += (*nearest_obj_props.object)->getDiffuse() * (*it)->_color  * (lightDir.normalize()|nearest_obj_props.N.normalize());
+            specular += (*nearest_obj_props.object)->getSpecular() * (*it)->_color * pow((Rl | lightDir.normalize()), (*nearest_obj_props.object)->shining());
         }
     }
     //TODO: calculate shadow for each light source and phong
-    return reflection_color + refraction_color;
+    return (ambient + diffuse + specular) + reflection_color + refraction_color;
 }
 
 bool Scene::findNearestObject(IN Ray ray, OUT Object** object, OUT double& t, OUT Point3d& P, OUT Vector3d& N, OUT Color3d& texColor) const
@@ -152,7 +157,7 @@ Color3d Scene::calcRefraction(const Ray& ray, const Point3d& P, const Vector3d& 
     //ToDO: is _index is n_1/n_2?
     //Todo: where should we take 1/index?
     double index = object.getIndex();
-    Point3d rayDir = ray(1.0);
+    Point3d rayDir = ray(1);
     double cos_theta_i = (N|rayDir) * index;
     double cos_theta_t = 1 - pow(index,2) * (1 - (N | rayDir) * (N | rayDir));
     if(cos_theta_t < 0)

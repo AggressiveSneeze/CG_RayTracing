@@ -18,7 +18,7 @@
 
 #include "general.h"
 #include "MyVecs.h"
-
+#include "ray.h"
 
 //////////////////////////////
 // Class Declaration        //

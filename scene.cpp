@@ -26,7 +26,7 @@ void Scene::add_light(PointLight *light) {
     _lights.push_back(light);
 }
 
-Color3d Scene::trace_ray(Ray ray, double vis = 1.0) const {
+Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
     //psuedocode
     //findNearestObject()
     //if false return some colour (maybe background).
@@ -72,7 +72,7 @@ Color3d Scene::trace_ray(Ray ray, double vis = 1.0) const {
         //Ray in the direcation of the light from the point P
         Vector3d lightDir = (*it)->_position - nearest_obj_props.P;
         Ray ray = Ray(nearest_obj_props.P, lightDir);
-        Vector3d Rl = (ray(1) - 2*((nearest_obj_props.N|ray(1)) * nearest_obj_props.N)).normalize();
+        Vector3d Rl = (ray(1) - (((nearest_obj_props.N|ray(1)) * nearest_obj_props.N))*2).normalize();
         bool intersect = findNearestObject(ray, nearest_obj_props.object, nearest_obj_props.t,
                                             nearest_obj_props.P, nearest_obj_props.N, nearest_obj_props.texColor);
         if(intersect)
@@ -125,7 +125,7 @@ bool Scene::findNearestObject(IN Ray ray, OUT Object** object, OUT double& t, OU
     return false;
 }
 
-Color3d Scene::calcReflection(const Ray& ray, const Point3d& P, const Vector3d& N, const Object& object, double vis = 1.0, bool isCritical = false) const {
+Color3d Scene::calcReflection(const Ray& ray, const Point3d& P, const Vector3d& N, const Object& object, double vis /*= 1.0*/, bool isCritical /*= false*/) const {
     //psuedocode
 //    c1 = -dot_product( N, V )
 //    Rl = V + (2 * N * c1 )
@@ -137,11 +137,11 @@ Color3d Scene::calcReflection(const Ray& ray, const Point3d& P, const Vector3d& 
     if(isCritical)
     {
         double cos_theta_i = (N|rayDir) * object.getIndex();
-        Rl = (rayDir - 2*(cos_theta_i * N)).normalize();
+        Rl = (rayDir - (cos_theta_i * N)*2).normalize();
     }
     else
     {
-        Rl = (rayDir - 2*((N|rayDir) * N)).normalize();
+        Rl = (rayDir - ((N|rayDir) * N)*2).normalize();
     }
     Ray newRay = Ray(P, Rl);
     if(_numberOfRefRays == 1)
@@ -152,7 +152,7 @@ Color3d Scene::calcReflection(const Ray& ray, const Point3d& P, const Vector3d& 
 
 }
 
-Color3d Scene::calcRefraction(const Ray& ray, const Point3d& P, const Vector3d& N, const Object& object, double vis = 1.0) const {
+Color3d Scene::calcRefraction(const Ray& ray, const Point3d& P, const Vector3d& N, const Object& object, double vis /*= 1.0*/) const {
     //snell's law
     //ToDO: is _index is n_1/n_2?
     //Todo: where should we take 1/index?

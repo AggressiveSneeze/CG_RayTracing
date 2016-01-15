@@ -13,7 +13,12 @@ EXEC =
 
 # list of all the sources files
 SRCS	=  	ex5.cpp		\
-		bimage.cpp
+		bimage.cpp \
+		scene.cpp \
+		camera.cpp \
+		MyMeshObject.cpp \
+		polygon.cpp \
+		triangle.cpp
 
 # compiler 
 CC	= g++ -std=c++11

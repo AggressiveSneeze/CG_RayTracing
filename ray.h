@@ -51,7 +51,7 @@ public:
   }
   
   // operator() - Evaluate ray on the given parameter t //
-  Point3d operator()(double t) { return _O + _D * t ; }
+  Point3d operator()(double t) const { return _O + _D * t ; }
 
 private:
   Point3d       _O;       // Ray origion                                      //

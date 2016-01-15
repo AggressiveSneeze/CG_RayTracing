@@ -8,7 +8,7 @@ Polygon::Polygon(vector<Point3d> & vertices): _vertices(vertices) {};
 
 void Polygon::triangulate() {
     for (int i=1;i<_vertices.size()-1;i++) {
-        _triangles.push_back(new Triangle(vertices[0],vertices[i],vertices[i+1]));
+        _triangles.push_back(new Triangle(_vertices[0],_vertices[i],_vertices[i+1]));
     }
 }
 

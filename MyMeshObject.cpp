@@ -6,7 +6,9 @@
 #include "MyMesh.h"
 #include "sphere.h"
 #include <vector>
-MyMeshObject::MyMeshObject(MyMesh & mesh): _mesh(mesh) {
+MyMeshObject::MyMeshObject(MyMesh & mesh){
+
+	_mesh=mesh;
 
 	//maybe something here to compute bounding sphere and centre.
 	//is it really necessary? Can't just check if ray intersects with any of the triangles?
@@ -20,17 +22,21 @@ MyMeshObject::MyMeshObject(MyMesh & mesh): _mesh(mesh) {
 void MyMeshObject::calculateBoundingSphere() {
 
 	Vector3d center;
-	Vector3d xmin,xmax,ymin,ymax,zmin,zmax;
+	//Vector3d xmin,xmax,ymin,ymax,zmin,zmax;
 	//TODO: Is this the right way?
-	xmin=ymin=zmin=Vector3d.vectorize(INF);
-	xmax=ymin=zmin=Vector3d.vectorize(-INF);
+	Vector3d xmin(INF,INF,INF);
+	Vector3d ymin(INF,INF,INF);
+	Vector3d zmin(INF,INF,INF);
+	Vector3d xmax(-INF,-INF,-INF);
+	Vector3d ymax(-INF,-INF,-INF);
+	Vector3d zmax(-INF,-INF,-INF);
 
 	for (MyMesh::VertexIter v_it=_mesh.vertices_begin();
 					v_it!=_mesh.vertices_end(); ++v_it) {
 		if (_mesh.point(v_it)[0] < xmin[0]) xmin = _mesh.point(v_it);
 		if (_mesh.point(v_it)[0] > xmax[0]) xmax = _mesh.point(v_it);
-		if (_mesh.point(v_it)[1] < ymin.[1]) ymin = _mesh.point(v_it);
-		if (_mesh.point(v_it)[1] > ymax.[1]) ymax = _mesh.point(v_it);
+		if (_mesh.point(v_it)[1] < ymin[1]) ymin = _mesh.point(v_it);
+		if (_mesh.point(v_it)[1] > ymax[1]) ymax = _mesh.point(v_it);
 		if (_mesh.point(v_it)[2] < zmin[2]) zmin = _mesh.point(v_it);
 		if (_mesh.point(v_it)[2] > zmax[2]) zmax = _mesh.point(v_it);
 	}

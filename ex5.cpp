@@ -8,6 +8,7 @@
 #include "camera.h"
 #include "MyMesh.h"
 #include "MyMeshObject.h"
+#include "object.h"
 
 //#include <stdio.h>
 #include <iostream>

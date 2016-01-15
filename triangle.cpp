@@ -24,7 +24,7 @@ int Triangle::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d&
     float inv_det=1.0/det;
 
     //calculate distance from vert0 to ray origin.
-    Vector3d tvec=ray.O()-verts[0];
+    Vector3d tvec=ray.O()-_p0;
     //calculate U parameter and test bounds
     float u=(tvec|pvec)*inv_det;
     if (u<0.0 || u>1.0) return 0;

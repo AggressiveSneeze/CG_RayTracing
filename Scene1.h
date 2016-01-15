@@ -5,7 +5,6 @@
 //  Created by HUJI Computer Graphics course staff, 2012-2013.
 //
 
-
 #ifndef cg_projects_Scene1_h
 #define cg_projects_Scene1_h
 

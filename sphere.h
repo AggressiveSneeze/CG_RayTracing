@@ -21,7 +21,7 @@
 
 
 //////////////////////////////
-// Class Decleration        //
+// Class Declaration        //
 //////////////////////////////
 
 static const Vector3d Vn = Vector3d(0.0,1.0,0.0);
@@ -37,7 +37,8 @@ public:
 
   // Constructor - create a sphere with the given parameters  //
   Sphere(Point3d C, double r);
-
+  //Deconstructor
+  virtual ~Sphere();
   // Ray Sphere intersection //
   virtual int intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d& P, OUT Vector3d& N, OUT Color3d& texColor);
 

@@ -50,7 +50,7 @@ private:
   void calculateBoundingSphere();
 
 private:
-  static MyMesh    _mesh;            // The mesh the object is made of   //
+  MyMesh    _mesh;            // The mesh the object is made of   //
   Sphere*   _boundingSphere;  // The sphere bounding the object   //
   Point3d   _center;          // The center of the mesh           //
 

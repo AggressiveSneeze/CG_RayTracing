@@ -2,39 +2,61 @@
 // Created by jadams on 1/17/16.
 //
 
-#include "object.h"s
+#include "object.h"
+
+//constructors
+Object::Object() {};
+
+//texture stuff
+void Object::set_texture_map(BImage* image){};
 
 // Original methods (i left them because the ex3 scene uses them  //
 // and the ex mentioned that we must work with your ex3 file)     //
-Color3d& diffuse();
-Color3d& specular();
-Color3d& ambient();
-Color3d& reflection();
-Color3d& transparency();
-double& index();
-double& shining();
 
-// Const get methods (to let the compiler do the optimizations we want it to do)  //
-const Object::Color3d&  getDiffuse() {
+Color3d& Object::diffuse() {
     return _diffuse;
 }
-const Object::Color3d&  getSpecular()   {
+
+Color3d& Object::specular() {
+    return _specular;
+}
+Color3d& Object::ambient() {
+    return _ambient;
+}
+Color3d& Object::reflection() {
+    return _reflection;
+}
+Color3d& Object::transparency() {
+    return _transparency;
+}
+double& Object::index() {
+    return _index;
+}
+double& Object::shining() {
+    return _shining;
+}
+
+// Const get methods (to let the compiler do the optimizations we want it to do)  //
+const Color3d&  Object::getDiffuse() const {
+    return _diffuse;
+}
+const Color3d&  Object::getSpecular()  const {
     return _specular;
 
 }
-const Object::Color3d&  getAmbient() {
+const Color3d&  Object::getAmbient() const {
     return _ambient;
 }
 
-const Object::Color3d&  getReflection() {
+const Color3d&  Object::getReflection() const {
     return _reflection;
 }
-const Object::Color3d&  getTransparency() {
+const Color3d&  Object::getTransparency() const {
     return _transparency;
 }
-const Object::double    getIndex()  {
+const double    Object::getIndex() const  {
     return _index;
 }
-const Object::double    getShining() {
+const double    Object::getShining() const {
     return _shining;
 }

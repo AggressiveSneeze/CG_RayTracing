@@ -35,7 +35,7 @@ static const double DEFAULT_SHINING = 25.0; // default shining value for an obje
 static const double DEFAULT_INDEX   = 1.0;  // default refraction index for an object //
 
 //////////////////////////////
-// Class Decleration        //
+// Class Declaration        //
 //////////////////////////////
 
 class Object 

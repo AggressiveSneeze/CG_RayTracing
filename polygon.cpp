@@ -4,6 +4,16 @@
 
 Polygon::Polygon(vector<Point3d> & vertices): _vertices(vertices) {};
 
+Polygon::Polygon(vector<Point3d> & vertices, Vector3d & normal): _vertices(vertices), _normal(normal){};
+
+// Constructor - Create a polygon from the given vertices, using the given texture map coordinates //
+Polygon::Polygon(vector<Point3d> & vertices, vector<Point2d> textices):_vertices(vertices),_textices(textices) {};
+
+// Constructor - Create a polygon from the given vertices, using the given normal and texture map coordinates //
+Polygon::Polygon(vector<Point3d> & vertices, vector<Point2d> textices, Vector3d & normal):_vertices(vertices),
+                                            _textices(textices),_normal(normal){};
+//deconstructor
+Polygon::~Polygon(){};
 
 
 void Polygon::triangulate() {
@@ -11,6 +21,7 @@ void Polygon::triangulate() {
         _triangles.push_back(new Triangle(_vertices[0],_vertices[i],_vertices[i+1]));
     }
 }
+
 
 int Polygon::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d& P, OUT Vector3d& N, OUT Color3d& texColor) {
 

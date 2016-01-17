@@ -19,7 +19,8 @@ SRCS	=  	ex5.cpp		\
 		MyMeshObject.cpp \
 		polygon.cpp \
 		triangle.cpp \
-		object.cpp \
+ 	object.cpp \
+ 	sphere.cpp\
 
 # compiler 
 CC	= g++ -std=c++11

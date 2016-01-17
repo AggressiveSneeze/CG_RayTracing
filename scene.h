@@ -31,7 +31,7 @@
 #include "object.h"
 #include "ray.h"
 #include "lights.h"
-
+#include "sphere.h"
 
 //////////////////////////////
 // Constants                //

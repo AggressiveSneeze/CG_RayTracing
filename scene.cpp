@@ -7,6 +7,12 @@
 //TODO: see if no constant allready defined for this perpuse
 #define T_MAX 1
 
+
+Scene::Scene() { };
+Scene::Scene(Color3d & color, AmbientLight & light, double cutoffAngle):_background(color),
+                                                                        _ambientLight(light),_cutoffAngle(cutoffAngle){};
+
+
 typedef struct IntersectProps{
     //Object** object, OUT double& t, OUT Point3d& P, OUT Vector3d& N, OUT Color3d& texColor
     Object** object;

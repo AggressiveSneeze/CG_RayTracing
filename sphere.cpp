@@ -1,15 +1,21 @@
-#include <OpenMesh/Core/Geometry/VectorT.hh>
+//#include <OpenMesh/Core/Geometry/VectorT.hh>
 #include "sphere.h"
 
-Sphere::Sphere(): _C(Vector3d(0.0, 0.0, 0.0)), _r(1){};
+Sphere::Sphere() {
 
+//    _C=Vector3d(0.0, 0.0, 0.0);
+//    _r=1.0;
+};
 Sphere::Sphere(Point3d C, double r): _C(C), _r(r){};
+
+//decon
+Sphere::~Sphere(){};
 
 int Sphere::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d& P, OUT Vector3d& N, OUT Color3d& texColor) {
     //TODO check openmesh usage is okay
 //    Vector3d normalizedRayD = ray.D().normalized();
     double a = (ray.D() | ray.D());
-    double b = 2*(ray.O()-_C)|ray.D();
+    double b = (ray.O()-_C) * 2|ray.D();
     double rCube = pow(_r, 2);
     double c = (ray.O()-_C)|((ray.O()-_C)- Vector3d(rCube, rCube, rCube));
     double d = b*b-4*c;
@@ -37,6 +43,5 @@ int Sphere::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d& P
 
 
 Color3d textureDiffuse(const Point3d& P) {
-
 };
 

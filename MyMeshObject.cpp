@@ -3,8 +3,6 @@
 //
 
 #include "MyMeshObject.h"
-#include "MyMesh.h"
-#include "sphere.h"
 #include <vector>
 MyMeshObject::MyMeshObject(MyMesh & mesh){
 
@@ -18,11 +16,13 @@ MyMeshObject::MyMeshObject(MyMesh & mesh){
 
 }
 
+MyMeshObject::~MyMeshObject() { };
+
+void MyMeshObject::set_texture_map(BImage* image) {};
 
 void MyMeshObject::calculateBoundingSphere() {
 
 	Vector3d center;
-	//Vector3d xmin,xmax,ymin,ymax,zmin,zmax;
 	//TODO: Is this the right way?
 	Vector3d xmin(INF,INF,INF);
 	Vector3d ymin(INF,INF,INF);

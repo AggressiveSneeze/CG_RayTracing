@@ -8,7 +8,7 @@
 //TODO:check why declared with forward dec
 #include "bimage.h"
 #include "scene.h"
-#include"time.h"
+#include "time.h"
 
 static Point3d randInPixelPoint(double width, double height, size_t row, size_t col);
 
@@ -16,6 +16,8 @@ static Point3d randInPixelPoint(double width, double height, size_t row, size_t 
 Camera::Camera(Point3d & pos,Point3d & coi, Vector3d & up, double fov, size_t samples_per_pixel /*= 1*/):
         _position(pos),_coi(coi),_up(up),_fov_h(fov),_samples_per_pixel(samples_per_pixel)
 {};
+
+Camera::Camera() {};
 
 //Camera::Camera(): _position(){};
 

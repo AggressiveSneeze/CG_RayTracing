@@ -8,7 +8,6 @@
 #ifndef cg_projects_Scene2_h
 #define cg_projects_Scene2_h
 
-
 struct Scene2 : public Scene
 {
 	

@@ -13,16 +13,16 @@ Scene::Scene(Color3d & color, AmbientLight & light, double cutoffAngle):_backgro
                                                                         _ambientLight(light),_cutoffAngle(cutoffAngle){};
 
 
-typedef struct IntersectProps{
-    //Object** object, OUT double& t, OUT Point3d& P, OUT Vector3d& N, OUT Color3d& texColor
-    Object** object;
-    double t;
-    Point3d P;
-    Vector3d N;
-    Color3d texColor;
-
-    IntersectProps() : object(nullptr) {}
-}IntersectProps;
+//typedef struct IntersectProps{
+//    //Object** object, OUT double& t, OUT Point3d& P, OUT Vector3d& N, OUT Color3d& texColor
+//    Object** object;
+//    double t;
+//    Point3d P;
+//    Vector3d N;
+//    Color3d texColor;
+//
+//    IntersectProps() : object(nullptr), t(0) {}
+//}IntersectProps;
 
 void Scene::add_object(Object * obj) {
     _objects.push_back(obj);
@@ -50,16 +50,21 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
     }
 
     vis *= RECURSION_FACTOR;
-    IntersectProps nearest_obj_props;
-    bool isIntersect = findNearestObject(ray, nearest_obj_props.object, nearest_obj_props.t,
-                                        nearest_obj_props.P, nearest_obj_props.N, nearest_obj_props.texColor);
+//    IntersectProps nearest_obj_props;
+    Object** object;
+    double t;
+    Point3d P;
+    Vector3d N;
+    Color3d texColor;
+    bool isIntersect = findNearestObject(ray, object, t,
+                                        P, N, texColor);
     Color3d reflection_color = _background;
     Color3d refraction_color;
     Color3d enviorment_color;
     if(isIntersect)
     {
-        reflection_color = calcReflection(ray, nearest_obj_props.P, nearest_obj_props.N, **nearest_obj_props.object, vis);
-        refraction_color = calcRefraction(ray, nearest_obj_props.P, nearest_obj_props.N, **nearest_obj_props.object, vis);
+        reflection_color = calcReflection(ray, P, N, **object, vis);
+        refraction_color = calcRefraction(ray, P, N, **object, vis);
     }
     else
     {

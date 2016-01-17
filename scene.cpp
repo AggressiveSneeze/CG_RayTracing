@@ -77,17 +77,17 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
         diffuse term: obj.diffuseColor * lightColor * <L , N> +
         specular term: obj.specularColor * lightColor *<R,L>^obj.shininess
      */
-    Color3d ambient = (*nearest_obj_props.object)->getAmbient() * _ambientLight._color;
+    Color3d ambient = (*object)->getAmbient() * _ambientLight._color;
     Color3d diffuse = COLOR_BLACK;
     Color3d specular = COLOR_BLACK;
     for(vector<PointLight *>::const_iterator it = _lights.cbegin(); it != _lights.cend(); it++)
     {
         //Ray in the direcation of the light from the point P
-        Vector3d lightDir = (*it)->_position - nearest_obj_props.P;
-        Ray ray = Ray(nearest_obj_props.P, lightDir);
-        Vector3d Rl = (ray(1) - (((nearest_obj_props.N|ray(1)) * nearest_obj_props.N))*2).normalize();
-        bool intersect = findNearestObject(ray, nearest_obj_props.object, nearest_obj_props.t,
-                                            nearest_obj_props.P, nearest_obj_props.N, nearest_obj_props.texColor);
+        Vector3d lightDir = (*it)->_position - P;
+        Ray ray = Ray(P, lightDir);
+        Vector3d Rl = (ray(1) - (((N|ray(1)) * N))*2).normalize();
+        bool intersect = findNearestObject(ray, object, t,
+                                            P, N, texColor);
         if(intersect)
         {
             continue;

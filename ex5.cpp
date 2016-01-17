@@ -38,8 +38,8 @@ int renderScene(size_t scene_index, size_t samplesPerPixel, size_t refRays, doub
 	camera.setSamplesPerPixel(samplesPerPixel);
 	
 	// image parameters
-	int w = 500;
-	int h = 500;
+	int w = 200;
+	int h = 200;
 #if __APPLE__
 	__block
 #endif
@@ -64,6 +64,7 @@ int renderScene(size_t scene_index, size_t samplesPerPixel, size_t refRays, doub
 #else
 		for (size_t i = 0; i < h; i++)
 		{
+			std::cout<<"We are in row "<<i<<std::endl;
 			// The render command:
 			camera.render(i, 1, img, *scene);
 		}

@@ -6,15 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated")
 set(SOURCE_FILES scene.cpp object.cpp ex5.cpp camera.cpp bimage.cpp MyMeshObject.cpp polygon.cpp scene.cpp sphere.cpp
                         triangle.cpp)
 
-#find_package(GLEW)
-#find_package(GLUT)
-#find_path(OpenMeshCore /cs/course/2013/cg/)
-#find_path(OPENGL /cs/course/current/cg/)
-#find_path(glm /cs/course/current/cg/)
-#
-#include_directories(${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS}
-#        ${GLEW_INCLUDE_DIRS} ${OpenMeshCore_INCLUDE_DIRS})
-#link_libraries(${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${GLEW_LIBRARIES} ${glm_LIBRARIES} ${OpenMeshCore_LIBRARIES})
+
 #link_directories(/usr/local/Cellar/open-mesh/4.1/lib)
 #include_directories(/usr/local/Cellar/open-mesh/4.1/include)
 #add_executable(CG_RayTracing ${SOURCE_FILES})

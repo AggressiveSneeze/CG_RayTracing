@@ -43,10 +43,12 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
 //    refract_color = trace_ray( get_refracted_ray( original_ray, obj ) )
 //
 //    return ( combine_colors( point_color, reflect_color, refract_color ))
+    //std::cout<<"potato";
     if(vis < MINIMAL_VIS)
     {
         return _background;
     }
+
     vis *= RECURSION_FACTOR;
     IntersectProps nearest_obj_props;
     bool isIntersect = findNearestObject(ray, nearest_obj_props.object, nearest_obj_props.t,

@@ -18,7 +18,8 @@ SRCS	=  	ex5.cpp		\
 		camera.cpp \
 		MyMeshObject.cpp \
 		polygon.cpp \
-		triangle.cpp
+		triangle.cpp \
+		object.cpp \
 
 # compiler 
 CC	= g++ -std=c++11

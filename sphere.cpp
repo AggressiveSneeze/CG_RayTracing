@@ -24,6 +24,8 @@ int Sphere::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d& P
     double rootD=sqrt(d);
     double t0=0.5*(-b-rootD);
     double t1=0.5*(-b+rootD);
+    std::cout<<"t0 is: "<<t0<<",";
+    std::cout<<"t1 is: "<<t1<<","<<"tmax is : "<<tMax<<std::endl;
 
     if(t0>=0 && t0<=tMax) {
         t=t0;

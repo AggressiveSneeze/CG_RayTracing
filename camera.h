@@ -50,6 +50,8 @@ private:
   Vector3d  _up;        // Vector pointing up                       //
   double    _fov_h;     // horizontal field of view for the camera  //
   size_t    _samples_per_pixel;
+  double view_port_size;
+  //double pix_size_x,pix_size_y;
 };
 
 

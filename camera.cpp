@@ -15,7 +15,12 @@ static Point3d randInPixelPoint(double width, double height, size_t row, size_t 
 //constructors
 Camera::Camera(Point3d & pos,Point3d & coi, Vector3d & up, double fov, size_t samples_per_pixel /*= 1*/):
         _position(pos),_coi(coi),_up(up),_fov_h(fov),_samples_per_pixel(samples_per_pixel)
-{};
+{
+    //calculate viewpoint-size
+    view_port_size=(_coi-_position).length()*tan(_fov_h)*2;
+
+
+};
 
 Camera::Camera() {};
 
@@ -26,11 +31,12 @@ void Camera::setSamplesPerPixel(size_t samples_per_pixel) {
     _samples_per_pixel=samples_per_pixel;
 };
 
+
 // render - create a bitmap image with the given properties from the given scene
 void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene & scene) const{
     std::srand(time(NULL));
-    double pix_size_x = (2 * tan(_fov_h))/img.width();
-    double pix_size_y = (2 * tan(_fov_h))/img.height();
+    double pix_size_x = view_port_size/img.width();
+    double pix_size_y = view_port_size/img.height();
     //Bpixel temp_pixel=new Bpixel();
     //psuedocode
     //for each pixel
@@ -44,17 +50,19 @@ void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene 
             Ray r;
             if(_samples_per_pixel == 1)
             {
-                r = Ray(Point3d((i * pix_size_x)/2.f, (row_start * pix_size_y)/2.f, 0.f), _coi - _position);
+                Point3d origin=Point3d(((i+0.5)*pix_size_x), ((row_start+0.5) * pix_size_y), 0.f);
+                r = Ray(origin, origin - _position);
             }
             else
             {
                 r = Ray(randInPixelPoint(pix_size_x, pix_size_y, row_start, i), _coi - _position);
             }
+//            std::cout<<"current ray is "<< r.O()[0] <<","<<r.O()[1]<<","<<r.O()[2]<<"."<<std::endl;
             Color3d pix_color = scene.trace_ray(r);
             //TODO This isn't quite right.
             Bpixel temp_pixel=Bpixel((uchar)(pix_color[0]), (uchar)(pix_color[1]), (uchar)(pix_color[2]));
             //img(row_start, j) = uchar(pix_color[0], pix_color[1], pix_color[2]);
-            std::cout<<"current pixel is " <<pix_color[0]<<","<<pix_color[1]<<","<<pix_color[2]<<std::endl;
+            //std::cout<<"current pixel is " <<pix_color[0]<<","<<pix_color[1]<<","<<pix_color[2]<<std::endl;
             img(row_start,j)=temp_pixel;
             //img(row_start,j)=(new Bpixel((uchar)(pix_color[0]), (uchar)(pix_color[1]), (uchar)(pix_color[2])));
             //temp so i can keep mock-compiling.

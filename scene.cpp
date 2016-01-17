@@ -90,8 +90,8 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
         }
         else
         {
-          diffuse += (*nearest_obj_props.object)->getDiffuse() * (*it)->_color  * (lightDir.normalize()|nearest_obj_props.N.normalize());
-            specular += (*nearest_obj_props.object)->getSpecular() * (*it)->_color * pow((Rl | lightDir.normalize()), (*nearest_obj_props.object)->shining());
+          diffuse += (*object)->getDiffuse() * (*it)->_color  * (lightDir.normalize()|N.normalize());
+            specular += (*object)->getSpecular() * (*it)->_color * pow((Rl | lightDir.normalize()), (*object)->shining());
         }
     }
     //TODO: calculate shadow for each light source and phong

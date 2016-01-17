@@ -38,7 +38,7 @@ void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene 
     //      img[pixel]=scene.race_tray
     for(size_t i = 0; i < img.width(); i++)
     {
-        std::cout<<"We are in col " <<i<<std::endl;
+        //std::cout<<"We are in col " <<i<<std::endl;
         for(int j = 0; j < _samples_per_pixel; j++)
         {
             Ray r;
@@ -54,6 +54,7 @@ void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene 
             //TODO This isn't quite right.
             Bpixel temp_pixel=Bpixel((uchar)(pix_color[0]), (uchar)(pix_color[1]), (uchar)(pix_color[2]));
             //img(row_start, j) = uchar(pix_color[0], pix_color[1], pix_color[2]);
+            std::cout<<"current pixel is " <<pix_color[0]<<","<<pix_color[1]<<","<<pix_color[2]<<std::endl;
             img(row_start,j)=temp_pixel;
             //img(row_start,j)=(new Bpixel((uchar)(pix_color[0]), (uchar)(pix_color[1]), (uchar)(pix_color[2])));
             //temp so i can keep mock-compiling.

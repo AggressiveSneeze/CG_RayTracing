@@ -59,11 +59,12 @@ void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene 
             }
 //            std::cout<<"current ray is "<< r.O()[0] <<","<<r.O()[1]<<","<<r.O()[2]<<"."<<std::endl;
             Color3d pix_color = scene.trace_ray(r);
+            std::cout<<pix_color<<std::endl;
             //TODO This isn't quite right.
             Bpixel temp_pixel=Bpixel((uchar)(pix_color[0]), (uchar)(pix_color[1]), (uchar)(pix_color[2]));
             //img(row_start, j) = uchar(pix_color[0], pix_color[1], pix_color[2]);
             //std::cout<<"current pixel is " <<pix_color[0]<<","<<pix_color[1]<<","<<pix_color[2]<<std::endl;
-            img(row_start,j)=temp_pixel;
+            img(row_start,(int)i)=temp_pixel;
             //img(row_start,j)=(new Bpixel((uchar)(pix_color[0]), (uchar)(pix_color[1]), (uchar)(pix_color[2])));
             //temp so i can keep mock-compiling.
                // img(row_start,j)=5;

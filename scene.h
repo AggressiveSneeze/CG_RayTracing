@@ -99,6 +99,7 @@ private:
   // calculate the refraction color at the given intersection point
   Color3d calcRefraction(const Ray& ray, const Point3d& P, const Vector3d& N, const Object& object, double vis = 1.0) const;
 
+
 private:
   
   vector<Object *>        _objects;       // The scene's objects          //

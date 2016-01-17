@@ -5,12 +5,14 @@
 #include "scene.h"
 
 //TODO: see if no constant allready defined for this perpuse
-#define T_MAX 20
+
+double  t_max = INF;
 
 
 Scene::Scene() { };
 Scene::Scene(Color3d & color, AmbientLight & light, double cutoffAngle):_background(color),
-                                                                        _ambientLight(light),_cutoffAngle(cutoffAngle){};
+                                                                        _ambientLight(light),
+                                                                        _cutoffAngle(cutoffAngle){};
 
 
 //typedef struct IntersectProps{
@@ -44,37 +46,67 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
 //
 //    return ( combine_colors( point_color, reflect_color, refract_color ))
     //std::cout<<"potato";
+    double tmp_t_max;
     if(vis < MINIMAL_VIS)
     {
-        return _background;
+        return _background * 255;
     }
 
     vis *= RECURSION_FACTOR;
 //    IntersectProps nearest_obj_props;
-    Object** object= nullptr;
+    Object *object;
     double t;
     Point3d P;
     Vector3d N;
     Color3d texColor;
-    bool isIntersect = findNearestObject(ray, object, t,
+    bool isIntersect = findNearestObject(ray, &object, t,
                                         P, N, texColor);
 
-    Color3d reflection_color;
-    Color3d refraction_color;
-    Color3d enviorment_color;
+    Color3d reflection_color = _background;
+    Color3d refraction_color = _background;
     if(isIntersect)
     {
-        std::cout<<"We have an intersection."<<std::endl;
+        if(t_max > t)
+        {
+            t_max = t;
+        }
+//        std::cout<<"We have an intersection."<<std::endl;
 
-        std::cout<<"Object: "<<(*object)->getIndex()<<std::endl;
-        std::cout<<"seg fault"<<std::endl;
-
-        reflection_color = calcReflection(ray, P, N, **object, vis);
-        refraction_color = calcRefraction(ray, P, N, **object, vis);
+//        std::cout<<"Object: "<<(*object)->getIndex()<<std::endl;
+//        std::cout<<"seg fault"<<std::endl;
+        if((*object).getReflection() != Color3d(0.0, 0.0, 0.0))
+        {
+            reflection_color = calcReflection(ray, P, N, *object, vis);
+        }
+        if((*object).getTransparency() != Color3d(0.0, 0.0, 0.0))
+        {
+            refraction_color = calcRefraction(ray, P, N, *object, vis);
+        }
     }
     else
     {
-        return _background;
+        return _background * 255;
+    }
+
+    for(int i = 0; i < 3; i++)
+    {
+        if(reflection_color[i] < 0.0)
+        {
+            reflection_color[i] = 0.0;
+        }
+        else if(reflection_color[i] > 1.0)
+        {
+            reflection_color[i] = 1.0;
+        }
+
+        if(refraction_color[i] < 0.0)
+        {
+            refraction_color[i] = 0.0;
+        }
+        else if(refraction_color[i] > 1.0)
+        {
+            refraction_color[i] = 1.0;
+        }
     }
     //iterate over lights to find if any object shadows the object, if not calculate phong
     /*
@@ -83,55 +115,61 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
         diffuse term: obj.diffuseColor * lightColor * <L , N> +
         specular term: obj.specularColor * lightColor *<R,L>^obj.shininess
      */
-    Color3d ambient = (*object)->getAmbient() * _ambientLight._color;
-    Color3d diffuse = COLOR_BLACK;
-    Color3d specular = COLOR_BLACK;
-    for(vector<PointLight *>::const_iterator it = _lights.cbegin(); it != _lights.cend(); it++)
-    {
-        //Ray in the direcation of the light from the point P
-        Vector3d lightDir = (*it)->_position - P;
-        Ray ray = Ray(P, lightDir);
-        Vector3d Rl = (ray(1) - (((N|ray(1)) * N))*2).normalize();
-        bool intersect = findNearestObject(ray, object, t,
-                                            P, N, texColor);
-        if(intersect)
-        {
-            continue;
-        }
-        else
-        {
-          diffuse += (*object)->getDiffuse() * (*it)->_color  * (lightDir.normalize()|N.normalize());
-            specular += (*object)->getSpecular() * (*it)->_color * pow((Rl | lightDir.normalize()), (*object)->shining());
-        }
-    }
-    //TODO: calculate shadow for each light source and phong
-    return (ambient + diffuse + specular) + reflection_color + refraction_color;
+//    Color3d ambient = (object)->getAmbient() * _ambientLight._color;
+//    Color3d diffuse = COLOR_BLACK;
+//    Color3d specular = COLOR_BLACK;
+//    tmp_t_max = t_max;
+//    t_max = INF;
+//    for(vector<PointLight *>::const_iterator it = _lights.cbegin(); it != _lights.cend(); it++)
+//    {
+//    //Ray in the direcation of the light from the point P
+//        Vector3d lightDir = (*it)->_position - P;
+//        Ray ray = Ray(P, lightDir);
+//        Vector3d Rl = (ray(1) - (((N|ray(1).normalize()) * N))*2).normalize();
+//        bool intersect = findNearestObject(ray, &object, t,
+//                                            P, N, texColor);
+//        if(intersect)
+//        {
+//            continue;
+//        }
+//        else
+//        {
+//            std::cout<<(lightDir.normalize()|N.normalize())<<std::endl;
+//          diffuse += (object)->getDiffuse() * (*it)->_color  * (lightDir.normalize()|N.normalize());
+//          specular += (object)->getSpecular() * (*it)->_color * pow((Rl | lightDir.normalize()), (object)->shining());
+//        }
+//    }
+//    t_max = tmp_t_max;
+//    std::cout<<"color comp ref: "<<reflection_color<<",refraction: "<<refraction_color<<", diff"<<diffuse<<", spec"<<specular<<", amb: "<<ambient<<std::endl;
+//    //TODO: calculate shadow for each light source and phong
+////    std::cout<<(ambient + diffuse + specular) + reflection_color + refraction_color<<std::endl;
+//    return (ambient + diffuse + specular) + reflection_color + refraction_color;
+    return (reflection_color + refraction_color) * 255;
+//    return (reflection_color) * 255;
 }
 
 bool Scene::findNearestObject(IN Ray ray, OUT Object** object, OUT double& t, OUT Point3d& P, OUT Vector3d& N, OUT Color3d& texColor) const
 {
     double dist = INF;
-    Object * nearestObj;
     double nearestT;
     Point3d nearestP;
     Vector3d nearestN;
     Color3d nearestTexColor;
-
     //iterate over all the objects of the scene and determine which is the nearest
     for(vector<Object *>::const_iterator it = _objects.begin(); it != _objects.end(); it++)
     {
 
-        int intersect = (*it)->intersect(ray, T_MAX, nearestT, nearestP, nearestN, nearestTexColor);
-        std::cout<<"t = "<<nearestT<<","<<"P = "<<nearestP<<","<<"N = "<<nearestN<<std::endl;
+        int intersect = (*it)->intersect(ray, t_max, nearestT, nearestP, nearestN, nearestTexColor);
+//        std::cout<<"t = "<<nearestT<<","<<"P = "<<nearestP<<","<<"N = "<<nearestN<<std::endl;
         if(intersect)
         {
-            std::cout<<"we got here."<<std::endl;
+//            std::cout<<"we got here."<<std::endl;
             double tempDist = (ray.O() - nearestP).length();
             //If the object is the nearest update all the OUTs
             if(tempDist < dist)
             {
                 dist = tempDist;
-                nearestObj = (*it);
+                *object = *it;
                 t = nearestT;
                 P = nearestP;
                 N = nearestN;
@@ -139,7 +177,6 @@ bool Scene::findNearestObject(IN Ray ray, OUT Object** object, OUT double& t, OU
             }
         }
     }
-    object = &nearestObj;
     if(dist != INF) return true;
 
     return false;
@@ -152,7 +189,7 @@ Color3d Scene::calcReflection(const Ray& ray, const Point3d& P, const Vector3d& 
     //Rl=-Rl;
     //new_ray=Ray(P,normalise(Rl))
     //return trace_ray(ray,..)
-    std::cout<<"inside reflection."<<std::endl;
+//    std::cout<<"inside reflection."<<std::endl;
     Point3d rayDir = ray(1.0);
     Vector3d Rl;
     if(isCritical)

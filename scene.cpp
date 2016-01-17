@@ -113,7 +113,7 @@ bool Scene::findNearestObject(IN Ray ray, OUT Object** object, OUT double& t, OU
         int intersect = currObj->intersect(ray, T_MAX, nearestT, nearestP, nearestN, nearestTexColor);
         if(intersect)
         {
-            double tempDist = (ray.O() - P).length();
+            double tempDist = (ray.O() - nearestP).length();
             //If the object is the nearest update all the OUTs
             if(tempDist < dist)
             {

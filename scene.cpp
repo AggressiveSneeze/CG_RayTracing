@@ -58,12 +58,17 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
     Color3d texColor;
     bool isIntersect = findNearestObject(ray, object, t,
                                         P, N, texColor);
+
     Color3d reflection_color;
     Color3d refraction_color;
     Color3d enviorment_color;
     if(isIntersect)
     {
         std::cout<<"We have an intersection."<<std::endl;
+
+        std::cout<<"Object: "<<(*object)->getIndex()<<std::endl;
+        std::cout<<"seg fault"<<std::endl;
+
         reflection_color = calcReflection(ray, P, N, **object, vis);
         refraction_color = calcRefraction(ray, P, N, **object, vis);
     }
@@ -106,38 +111,37 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
 bool Scene::findNearestObject(IN Ray ray, OUT Object** object, OUT double& t, OUT Point3d& P, OUT Vector3d& N, OUT Color3d& texColor) const
 {
     double dist = INF;
-    double *nearestT;
-    Point3d *nearestP;
-    Vector3d *nearestN;
-    Color3d *nearestTexColor;
+    Object * nearestObj;
+    double nearestT;
+    Point3d nearestP;
+    Vector3d nearestN;
+    Color3d nearestTexColor;
 
     //iterate over all the objects of the scene and determine which is the nearest
     for(vector<Object *>::const_iterator it = _objects.begin(); it != _objects.end(); it++)
     {
-        Object * currObj= (*it);
-        int intersect = currObj->intersect(ray, T_MAX, *nearestT, *nearestP, *nearestN, *nearestTexColor);
 
+        int intersect = (*it)->intersect(ray, T_MAX, nearestT, nearestP, nearestN, nearestTexColor);
+        std::cout<<"t = "<<nearestT<<","<<"P = "<<nearestP<<","<<"N = "<<nearestN<<std::endl;
         if(intersect)
         {
             std::cout<<"we got here."<<std::endl;
-            double tempDist = (ray.O() - *nearestP).length();
+            double tempDist = (ray.O() - nearestP).length();
             //If the object is the nearest update all the OUTs
             if(tempDist < dist)
             {
                 dist = tempDist;
-                object = &currObj;
-                t = *nearestT;
-                P = *nearestP;
-                N = *nearestN;
-                texColor = *nearestTexColor;
+                nearestObj = (*it);
+                t = nearestT;
+                P = nearestP;
+                N = nearestN;
+                texColor = nearestTexColor;
             }
         }
     }
+    object = &nearestObj;
+    if(dist != INF) return true;
 
-    if(dist != INF)
-    {
-        return true;
-    }
     return false;
 }
 

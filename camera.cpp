@@ -34,40 +34,33 @@ void Camera::setSamplesPerPixel(size_t samples_per_pixel) {
 
 // render - create a bitmap image with the given properties from the given scene
 void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene & scene) const{
+
     std::srand(time(NULL));
     double pix_size_x = view_port_size/img.width();
     double pix_size_y = view_port_size/img.height();
-    //Bpixel temp_pixel=new Bpixel();
-    //psuedocode
-    //for each pixel
-    //  for each ray from viewport
-    //      img[pixel]=scene.race_tray
-    for(size_t i = 0; i < img.width(); i++)
-    {
-        //std::cout<<"We are in col " <<i<<std::endl;
-        for(int j = 0; j < _samples_per_pixel; j++)
-        {
-            Ray r;
-            if(_samples_per_pixel == 1)
-            {
-                Point3d origin=Point3d(((i+0.5)*pix_size_x), ((row_start+0.5) * pix_size_y), 0.f);
-                r = Ray(origin, origin - _position);
+    Ray r;
+    Point3d origin;
+    Color3d pix_color;
+    Bpixel temp_pixel;
+    Color3d average_color=Color3d(0.0,0.0,0.0);
+    for(size_t i = 0; i < img.width(); i++) {
+        if (_samples_per_pixel == 1) {
+            origin = Point3d(((i + 0.5) * pix_size_x), ((row_start + 0.5) * pix_size_y), 0.f);
+            r = Ray(origin, origin - _position);
+            pix_color = scene.trace_ray(r);
+            temp_pixel = Bpixel((uchar) (pix_color[0]), (uchar) (pix_color[1]), (uchar) (pix_color[2]));
+            img(row_start, i) = temp_pixel;
+        }
+        else {
+            for (int j = 0; j < _samples_per_pixel; j++) {
+                //number of rays is more than one.
+                origin=randInPixelPoint(pix_size_x, pix_size_y, row_start, i);
+                r = Ray(origin,origin - _position);
+                average_color+=scene.trace_ray(r);
             }
-            else
-            {
-                r = Ray(randInPixelPoint(pix_size_x, pix_size_y, row_start, i), _coi - _position);
-            }
-//            std::cout<<"current ray is "<< r.O()[0] <<","<<r.O()[1]<<","<<r.O()[2]<<"."<<std::endl;
-            Color3d pix_color = scene.trace_ray(r) * 255;
-//            std::cout<<pix_color<<std::endl;
-            //TODO This isn't quite right.
-            Bpixel temp_pixel=Bpixel((uchar)(pix_color[0]), (uchar)(pix_color[1]), (uchar)(pix_color[2]));
-            //img(row_start, j) = uchar(pix_color[0], pix_color[1], pix_color[2]);
-            //std::cout<<"current pixel is " <<pix_color[0]<<","<<pix_color[1]<<","<<pix_color[2]<<std::endl;
-            img(row_start,(int)i)=temp_pixel;
-            //img(row_start,j)=(new Bpixel((uchar)(pix_color[0]), (uchar)(pix_color[1]), (uchar)(pix_color[2])));
-            //temp so i can keep mock-compiling.
-               // img(row_start,j)=5;
+            average_color*=(1.0/_samples_per_pixel);
+            temp_pixel = Bpixel((uchar) (average_color[0]), (uchar) (average_color[1]), (uchar) (average_color[2]));
+            img(row_start,i)=temp_pixel;
         }
     }
 
@@ -75,11 +68,7 @@ void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene 
 
 static Point3d randInPixelPoint(double width, double height, size_t row, size_t col)
 {
-    double rand_x = col * ((double)rand() / width);
-    double rand_y = col * ((double)rand() / height);
-
-    rand_x = (col * width) + rand_x * (width);
-    rand_y = (col * height) + rand_y * (height);
-
+    double rand_x = row+(fmod((double)rand(),width));
+    double rand_y = col+(fmod((double)rand(),height));
     return Point3d(rand_x, rand_y, 0.f);
 }

@@ -12,7 +12,8 @@ double  t_max = INF;
 Scene::Scene() { };
 Scene::Scene(Color3d & color, AmbientLight & light, double cutoffAngle):_background(color),
                                                                         _ambientLight(light),
-                                                                        _cutoffAngle(cutoffAngle){};
+                                                                        _cutoffAngle(cutoffAngle)
+                                                                        {};
 
 
 //typedef struct IntersectProps{
@@ -46,10 +47,10 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
 //
 //    return ( combine_colors( point_color, reflect_color, refract_color ))
     //std::cout<<"potato";
-//    if(vis == 1)
-//    {
-//        t_max = INF;
-//    }
+    if(vis == 1)
+    {
+        t_max = INF;
+    }
     double tmp_t_max;
     if(vis < MINIMAL_VIS)
     {
@@ -84,9 +85,10 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
         for(vector<PointLight *>::const_iterator it = _lights.cbegin(); it != _lights.cend(); it++)
         {
             //Ray in the direcation of the light from the point P
-            Vector3d lightDir = (*it)->_position - P;
-            Ray ray = Ray(P, lightDir);
-            Vector3d Rl = (ray(1) - (((N|ray(1).normalize()) * N))*2).normalize();
+            Vector3d L = ((*it)->_position - P).normalize();
+            Ray ray = Ray(P, L);
+//            Vector3d raydir = ray(1).normalize();
+            Vector3d Rl = ((((N|L) * N))*2 - L).normalize();
             bool intersect = findNearestObject(ray, &object, t,
                                                P, N, texColor);
             if(intersect)
@@ -96,8 +98,8 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
             else
             {
 //            std::cout<<(lightDir.normalize()|N.normalize())<<std::endl;
-                diffuse += (object)->getDiffuse() * (*it)->_color  * (lightDir.normalize()|N);
-                specular += (object)->getSpecular() * (*it)->_color * pow((Rl | lightDir.normalize()), (object)->shining());
+                diffuse += (object)->getDiffuse() * (*it)->_color  * (L|N);
+                specular += (object)->getSpecular() * (*it)->_color * pow((Rl | L), (object)->shining());
 //            std::cout<<diffuse/255<<std::endl;
             }
         }
@@ -140,7 +142,7 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
             color[i] = 1.0;
         }
     }
-    return color;
+    return color * vis;
 //    return (reflection_color) * 255;
 }
 
@@ -192,11 +194,11 @@ Color3d Scene::calcReflection(const Ray& ray, const Point3d& P, const Vector3d& 
     if(isCritical)
     {
         double cos_theta_i = (N|rayDir) * object.getIndex();
-        Rl = (rayDir - (cos_theta_i * N)*2).normalize();
+        Rl = (rayDir + (cos_theta_i * N)*2).normalize();
     }
     else
     {
-        Rl = (rayDir - ((N|rayDir) * N)*2).normalize();
+        Rl = (rayDir + ((N|rayDir) * N)*2).normalize();
     }
     Ray newRay = Ray(P, Rl);
     if(_numberOfRefRays == 1)

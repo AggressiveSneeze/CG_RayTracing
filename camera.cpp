@@ -47,7 +47,7 @@ void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene 
         if (_samples_per_pixel == 1) {
             origin = Point3d(((i + 0.5) * pix_size_x), ((row_start + 0.5) * pix_size_y), 0.f);
             r = Ray(origin, origin - _position);
-            pix_color = scene.trace_ray(r);
+            pix_color = scene.trace_ray(r) * 255;
             temp_pixel = Bpixel((uchar) (pix_color[0]), (uchar) (pix_color[1]), (uchar) (pix_color[2]));
             img(row_start, (int)i) = temp_pixel;
         }

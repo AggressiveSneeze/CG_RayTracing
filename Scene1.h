@@ -51,17 +51,17 @@ struct Scene1 : public Scene
 		scene.backgroundColor() = (blue +  white) * 0.5;
 		
 		// First sphere and string  //
-		vector<Point3d> string0_vertices(4);
-		string0_vertices[0] = Point3d(-11.9, 2.0, -3.9);
-		string0_vertices[1] = Point3d(-12.1, 2.0, -4.1);
-		string0_vertices[2] = Point3d(-12.1, 21.0, -4.1);
-		string0_vertices[3] = Point3d(-11.9, 21.0, -3.9);
-		Polygon* string0 = new Polygon(string0_vertices);
-		string0->diffuse() = iron;
-		string0->reflection() = black;
-		string0->specular() = white;
-		string0->shining() = 64;
-		scene.add_object(string0);
+//		vector<Point3d> string0_vertices(4);
+//		string0_vertices[0] = Point3d(-11.9, 2.0, -3.9);
+//		string0_vertices[1] = Point3d(-12.1, 2.0, -4.1);
+//		string0_vertices[2] = Point3d(-12.1, 21.0, -4.1);
+//		string0_vertices[3] = Point3d(-11.9, 21.0, -3.9);
+//		Polygon* string0 = new Polygon(string0_vertices);
+//		string0->diffuse() = iron;
+//		string0->reflection() = black;
+//		string0->specular() = white;
+//		string0->shining() = 64;
+//		scene.add_object(string0);
 		
 		Point3d center0(-12,2,-4);
 		double radius = 3;
@@ -73,17 +73,17 @@ struct Scene1 : public Scene
 		scene.add_object(sp0);
 		
 		// Second sphere and string //
-		vector<Point3d> string1_vertices(4);
-		string1_vertices[0] = Point3d(-5.9, 2.0, -3.9);
-		string1_vertices[1] = Point3d(-6.1, 2.0, -4.1);
-		string1_vertices[2] = Point3d(-6.1, 21.0, -4.1);
-		string1_vertices[3] = Point3d(-5.9, 21.0, -3.9);
-		Polygon* string1 = new Polygon(string1_vertices);
-		string1->diffuse() = iron;
-		string1->reflection() = black;
-		string1->specular() = white;
-		string1->shining() = 64;
-		scene.add_object(string1);
+//		vector<Point3d> string1_vertices(4);
+//		string1_vertices[0] = Point3d(-5.9, 2.0, -3.9);
+//		string1_vertices[1] = Point3d(-6.1, 2.0, -4.1);
+//		string1_vertices[2] = Point3d(-6.1, 21.0, -4.1);
+//		string1_vertices[3] = Point3d(-5.9, 21.0, -3.9);
+//		Polygon* string1 = new Polygon(string1_vertices);
+//		string1->diffuse() = iron;
+//		string1->reflection() = black;
+//		string1->specular() = white;
+//		string1->shining() = 64;
+//		scene.add_object(string1);
 		
 		Point3d center1(-6,2,-4);
 		radius = 3;
@@ -95,17 +95,17 @@ struct Scene1 : public Scene
 		scene.add_object(sp1);
 		
 		// Third sphere and string  //
-		vector<Point3d> string2_vertices(4);
-		string2_vertices[0] = Point3d(0.05, 2.0, -3.9);
-		string2_vertices[1] = Point3d(-0.05, 2.0, -4.1);
-		string2_vertices[2] = Point3d(-0.05, 21.0, -4.1);
-		string2_vertices[3] = Point3d(0.05,  21.0, -3.9);
-		Polygon* string2 = new Polygon(string2_vertices);
-		string2->diffuse() = iron;
-		string2->reflection() = black;
-		string2->specular() = white;
-		string2->shining() = 64;
-		scene.add_object(string2);
+//		vector<Point3d> string2_vertices(4);
+//		string2_vertices[0] = Point3d(0.05, 2.0, -3.9);
+//		string2_vertices[1] = Point3d(-0.05, 2.0, -4.1);
+//		string2_vertices[2] = Point3d(-0.05, 21.0, -4.1);
+//		string2_vertices[3] = Point3d(0.05,  21.0, -3.9);
+//		Polygon* string2 = new Polygon(string2_vertices);
+//		string2->diffuse() = iron;
+//		string2->reflection() = black;
+//		string2->specular() = white;
+//		string2->shining() = 64;
+//		scene.add_object(string2);
 		
 		Point3d center2(0,2,-4);
 		radius = 3;
@@ -120,17 +120,17 @@ struct Scene1 : public Scene
 		scene.add_object(sp2);
 		
 		// Fourth sphere and string //
-		vector<Point3d> string3_vertices(4);
-		string3_vertices[0] = Point3d(5.9, 2.0, -3.9);
-		string3_vertices[1] = Point3d(6.1, 2.0, -4.1);
-		string3_vertices[2] = Point3d(6.1, 21.0, -4.1);
-		string3_vertices[3] = Point3d(5.9, 21.0, -3.9);
-		Polygon* string3 = new Polygon(string3_vertices);
-		string3->diffuse() = iron;
-		string3->reflection() = black;
-		string3->specular() = white;
-		string3->shining() = 64;
-		scene.add_object(string3);
+//		vector<Point3d> string3_vertices(4);
+//		string3_vertices[0] = Point3d(5.9, 2.0, -3.9);
+//		string3_vertices[1] = Point3d(6.1, 2.0, -4.1);
+//		string3_vertices[2] = Point3d(6.1, 21.0, -4.1);
+//		string3_vertices[3] = Point3d(5.9, 21.0, -3.9);
+//		Polygon* string3 = new Polygon(string3_vertices);
+//		string3->diffuse() = iron;
+//		string3->reflection() = black;
+//		string3->specular() = white;
+//		string3->shining() = 64;
+//		scene.add_object(string3);
 		
 		Point3d center3(6,2,-4);
 		radius = 3;
@@ -142,17 +142,17 @@ struct Scene1 : public Scene
 		scene.add_object(sp3);
 		
 		// Fifth sphere and string  //
-		vector<Point3d> string4_vertices(4);
-		string4_vertices[0] = Point3d(17.4, 4.0, -3.9);
-		string4_vertices[1] = Point3d(17.6, 4.0, -4.1);
-		string4_vertices[2] = Point3d(12.1, 21.0, -4.1);
-		string4_vertices[3] = Point3d(11.9, 21.0, -3.9);
-		Polygon* string4 = new Polygon(string4_vertices);
-		string4->diffuse() = iron;
-		string4->reflection() = black;
-		string4->specular() = white;
-		string4->shining() = 64;
-		scene.add_object(string4);
+//		vector<Point3d> string4_vertices(4);
+//		string4_vertices[0] = Point3d(17.4, 4.0, -3.9);
+//		string4_vertices[1] = Point3d(17.6, 4.0, -4.1);
+//		string4_vertices[2] = Point3d(12.1, 21.0, -4.1);
+//		string4_vertices[3] = Point3d(11.9, 21.0, -3.9);
+//		Polygon* string4 = new Polygon(string4_vertices);
+//		string4->diffuse() = iron;
+//		string4->reflection() = black;
+//		string4->specular() = white;
+//		string4->shining() = 64;
+//		scene.add_object(string4);
 		
 		Point3d center4(17.5,4.0,-4.0);
 		radius = 3;
@@ -164,21 +164,21 @@ struct Scene1 : public Scene
 		scene.add_object(sp4);
 		
 		//create a plane
-		vector<Point3d> plane(4);
-		vector<Point2d> plane_uv(4);
-		double x = 100;
-		double z = -4;
-		plane[0] = Point3d(-x,z,-x);
-		plane[1] = Point3d(-x,z,x);
-		plane[2] = Point3d(x,z,x);
-		plane[3] = Point3d(x,z,-x);
-		Polygon * poly = new Polygon(plane,plane_uv);
-		poly->diffuse() = iron;
-		poly->reflection() = white * 0.5;
+//		vector<Point3d> plane(4);
+//		vector<Point2d> plane_uv(4);
+//		double x = 100;
+//		double z = -4;
+//		plane[0] = Point3d(-x,z,-x);
+//		plane[1] = Point3d(-x,z,x);
+//		plane[2] = Point3d(x,z,x);
+//		plane[3] = Point3d(x,z,-x);
+//		Polygon * poly = new Polygon(plane,plane_uv);
+//		poly->diffuse() = iron;
+//		poly->reflection() = white * 0.5;
 #if !WITHOUT_TEXTURES
 		poly->set_texture_map(b);
 #endif
-		scene.add_object(poly);
+//		scene.add_object(poly);
 	}
 	
 	virtual void setDefaultCamera(Camera& camera) const

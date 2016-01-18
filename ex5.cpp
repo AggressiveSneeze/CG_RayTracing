@@ -38,8 +38,8 @@ int renderScene(size_t scene_index, size_t samplesPerPixel, size_t refRays, doub
 	camera.setSamplesPerPixel(samplesPerPixel);
 	
 	// image parameters
-	int w = 100;
-	int h = 100;
+	int w = 500;
+	int h = 500;
 #if __APPLE__
 	__block
 #endif

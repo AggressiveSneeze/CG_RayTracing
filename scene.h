@@ -82,6 +82,7 @@ public:
 	{
 		_numberOfRefRays = n;
 	}
+
 	
   virtual void setDefaultCamera(Camera& camer) const = 0;
 	
@@ -99,19 +100,18 @@ private:
   // calculate the refraction color at the given intersection point
   Color3d calcRefraction(const Ray& ray, const Point3d& P, const Vector3d& N, const Object& object, double vis = 1.0) const;
 
-
 private:
   
-  vector<Object *>        _objects;       // The scene's objects          //
-  vector<PointLight * >   _lights;        // The scene's point lights     //
+    vector<Object *>        _objects;       // The scene's objects          //
+    vector<PointLight * >   _lights;        // The scene's point lights     //
 
-  AmbientLight            _ambientLight;  // The scene's Ambient light    //
-  Color3d                 _background ;   // The scene's background color //
+    AmbientLight            _ambientLight;  // The scene's Ambient light    //
+    Color3d                 _background ;   // The scene's background color //
 
-  Color3d                 _lastReflection;  // The last calculated reflection color //
+    Color3d                 _lastReflection;  // The last calculated reflection color //
   
-  double _cutoffAngle;
-  double _numberOfRefRays;
+    double _cutoffAngle;
+    double _numberOfRefRays;
 };
 
 #endif /* _SCENE_HH */

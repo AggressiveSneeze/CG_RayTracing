@@ -10,7 +10,7 @@
 #define __GENERAL_H__
 
 #include "MyVecs.h"
-
+#include <iostream>
 //////////////////////////////
 // Macros                   //
 //////////////////////////////

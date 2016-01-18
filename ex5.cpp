@@ -38,8 +38,8 @@ int renderScene(size_t scene_index, size_t samplesPerPixel, size_t refRays, doub
 	camera.setSamplesPerPixel(samplesPerPixel);
 	
 	// image parameters
-	int w = 200;
-	int h = 200;
+	int w = 100;
+	int h = 100;
 #if __APPLE__
 	__block
 #endif
@@ -58,9 +58,15 @@ int renderScene(size_t scene_index, size_t samplesPerPixel, size_t refRays, doub
 		// https://github.com/DrPizza/libdispatch) but other parallelization APIs
 		// such as TBB, might work better (I haven't checked this).
 #if __APPLE__
-		dispatch_apply(h, dispatch_get_global_queue(0, 0), ^(size_t i){
+//		dispatch_apply(h, dispatch_get_global_queue(0, 0), ^(size_t i){
+//			camera.render(i, 1, img, *scene);
+//		});
+		for (size_t i = 0; i < h; i++)
+		{
+			std::cout<<"We are in row "<<i<<std::endl;
+			// The render command:
 			camera.render(i, 1, img, *scene);
-		});
+		}
 #else
 		for (size_t i = 0; i < h; i++)
 		{

@@ -23,15 +23,23 @@ SRCS	=  	ex5.cpp		\
  	sphere.cpp\
 
 # compiler 
-CC	= g++ -std=c++11
+CC	= g++
 
 #OpenMesh definitions
-CG_HOME = /cs/course/2013/cg
+#CG_HOME = /usr/local/Cellar/open-mesh/4.1/
+#OM_DIR = $(CG_HOME)/OpenMesh
+#OM_LIBS = -L$(OM_DIR)/lib -lOpenMeshCore
+#OM_INCLUDE=  -I$(OM_DIR)/include
+
+#INCLUDE = -I/usr/include -I/usr/X11R6/include -I/cs/course/current/cg/include $(OM_INCLUDE)
+
+#OpenMesh definitions
+CG_HOME = /usr/local/Cellar/open-mesh/4.1
 OM_DIR = $(CG_HOME)/OpenMesh
 OM_LIBS = -L$(OM_DIR)/lib -lOpenMeshCore
 OM_INCLUDE=  -I$(OM_DIR)/include
 
-INCLUDE = -I/usr/include -I/usr/X11R6/include -I/cs/course/current/cg/include $(OM_INCLUDE)
+INCLUDE =-I/usr/local/include -I/usr/X11R6/include -I/usr/local/Cellar/glew/1.12.0/include $(OM_INCLUDE)
 
 OBJS = $(subst .cpp,.o,$(SRCS)) 		#substituting .cc -> .o
 
@@ -39,6 +47,8 @@ OBJS = $(subst .cpp,.o,$(SRCS)) 		#substituting .cc -> .o
 ifdef DBG
 
 	CFLAGS = 	\
+	    -std=c++11\
+	     -O3\
 		-Wall 	\
 		-Werror \
 		-DDEBUG	\
@@ -66,8 +76,8 @@ LDFLAGS	=
 APP = ex5
 
 # each lib should add with -l flag
-LIBS =  -L/usr/lib -lm -lGLEW -lglut -lGL -lGLU -ldl -L/usr/X11R6/lib $(OM_LIBS)  -L/cs/course/2013/cg/lib -lbimage
-
+#LIBS =  -L/usr/lib -lm -lGLEW -lglut -lGL -lGLU -ldl -L/usr/X11R6/lib $(OM_LIBS)  -L/cs/course/2013/cg/lib -lbimage
+LIBS = -L/usr/local/lib -lm -lGLEW -L/usr/lib -framework GLUT -framework OpenGL -ldl -L/usr/X11R6/lib $(OM_LIBS)
 
 # rule to change the suffix of the sources files
 OBJS	= ${SRCS:.cpp=.o}

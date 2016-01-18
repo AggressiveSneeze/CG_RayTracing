@@ -46,10 +46,10 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
 //
 //    return ( combine_colors( point_color, reflect_color, refract_color ))
     //std::cout<<"potato";
-    if(vis == 1)
-    {
-        t_max = INF;
-    }
+//    if(vis == 1)
+//    {
+//        t_max = INF;
+//    }
     double tmp_t_max;
     if(vis < MINIMAL_VIS)
     {

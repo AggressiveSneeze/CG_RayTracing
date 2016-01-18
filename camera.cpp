@@ -49,7 +49,7 @@ void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene 
             r = Ray(origin, origin - _position);
             pix_color = scene.trace_ray(r);
             temp_pixel = Bpixel((uchar) (pix_color[0]), (uchar) (pix_color[1]), (uchar) (pix_color[2]));
-            img(row_start, i) = temp_pixel;
+            img(row_start, (int)i) = temp_pixel;
         }
         else {
             for (int j = 0; j < _samples_per_pixel; j++) {
@@ -60,7 +60,7 @@ void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene 
             }
             average_color*=(1.0/_samples_per_pixel);
             temp_pixel = Bpixel((uchar) (average_color[0]), (uchar) (average_color[1]), (uchar) (average_color[2]));
-            img(row_start,i)=temp_pixel;
+            img(row_start,(int)i)=temp_pixel;
         }
     }
 

@@ -188,6 +188,7 @@ Color3d Scene::calcReflection(const Ray& ray, const Point3d& P, const Vector3d& 
 //    std::cout<<"inside reflection."<<std::endl;
     Point3d rayDir = ray(1.0).normalize() * -1;
     Vector3d Rl;
+    Color3d average_color=Color3d(0.0,0.0,0.0);
     if(isCritical)
     {
         double cos_theta_i = (N|rayDir) * object.getIndex();
@@ -202,7 +203,14 @@ Color3d Scene::calcReflection(const Ray& ray, const Point3d& P, const Vector3d& 
     {
         return object.getReflection() * trace_ray(newRay, vis);
     }
-    //ToDo: cone random rays
+    else {
+        //send multiple rays and average
+        for (int i; i<_numberOfRefRays;i++) {
+            average_color+=trace_ray(perturbateRay(newRay),vis);
+        }
+        average_color*=(1.0/_numberOfRefRays);
+        return object.getReflection()*average_color;
+    }
 
 }
 
@@ -214,6 +222,7 @@ Color3d Scene::calcRefraction(const Ray& ray, const Point3d& P, const Vector3d& 
     Point3d rayDir = ray(1);
     double cos_theta_i = (N|rayDir) * index;
     double cos_theta_t = 1 - pow(index,2) * (1 - (N | rayDir) * (N | rayDir));
+    Color3d average_color=Color3d(0.0,0.0,0.0);
     if(cos_theta_t < 0)
     {
         return calcReflection(ray, P, N, object, vis, true);
@@ -224,9 +233,36 @@ Color3d Scene::calcRefraction(const Ray& ray, const Point3d& P, const Vector3d& 
     {
         return object.getTransparency() * trace_ray(newRay, vis);
     }
+
+    else {
+        //send multiple rays and average
+        for (int i; i<_numberOfRefRays;i++) {
+            average_color+=trace_ray(perturbateRay(newRay),vis);
+        }
+        average_color*=(1.0/_numberOfRefRays);
+        return object.getTransparency()*average_color;
+    }
 }
 
+Ray Scene::perturbateRay(const Ray& r) const {
+    //create an orthonormal basis.
+    Vector3d ray_dir=r.D();
+    Vector3d x_1=Vector3d(0.0,-ray_dir[2],ray_dir[1]).normalize();
+    Vector3d x_2=(ray_dir%x_1).normalize();
+    //send out the cone 1 unit from r.p(), so the max radial distance deviating from the centre of the cone is max
+    //defined below.
+    double max=sin(_cutoffAngle*PI/PI_DEGREES);
+    //2 processes. Randomise magnitude of x_1 and x_2. Then randomise their positivity/negativity.
+    x_1*=fmod((double)rand(),max);
+    x_2*=fmod((double)rand(),max);
+    double pos_check_1=fmod((double)rand(),2);
+    double pos_check_2=fmod((double)rand(),2);
 
+    if (pos_check_1>1) x_1*=-1;
+    if (pos_check_2>1) x_1*=-1;
+
+    return Ray(r.O(),ray_dir+x_1+x_2);
+}
 
 
 

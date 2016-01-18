@@ -42,6 +42,7 @@ static const double INF         = 1e30;   // Infinity                           
 static const double EPS         = 1e-6;   // Epsilon (value closest to zero)                        //
 static const double PI_DEGREES  = 180.0;	// Value of PI (degrees)                                  //
 static const double INDEX_VOID  = 1.0;    // Refraction index of the void (not inside any object)   //
+static const double PI=3.14159265;
 
 static const double COLOR_NORMALIZE = 1.0 / 255.0;  // Optimization purposes (* is faster than /)   //
 

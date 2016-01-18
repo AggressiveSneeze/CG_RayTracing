@@ -245,6 +245,7 @@ Color3d Scene::calcRefraction(const Ray& ray, const Point3d& P, const Vector3d& 
 }
 
 Ray Scene::perturbateRay(const Ray& r) const {
+    //http://www.mathworks.com/matlabcentral/answers/72631-create-orthonormal-basis-from-a-given-vector
     //create an orthonormal basis.
     Vector3d ray_dir=r.D();
     Vector3d x_1=Vector3d(0.0,-ray_dir[2],ray_dir[1]).normalize();

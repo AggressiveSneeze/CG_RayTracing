@@ -30,13 +30,13 @@ int Sphere::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d& P
     if(t0>=0 && t0<=tMax) {
         t=t0;
         P= ray(t);
-        N=P-_C;
+        N=_C - P;
         return INTERSECTION;
     }
     if(t1>=0 && t1<=tMax) {
         t=t1;
         P= ray(t);
-        N=P-_C;
+        N=_C - P;
         //TODO texcolor
         return INTERSECTION;
     }

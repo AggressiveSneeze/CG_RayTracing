@@ -91,14 +91,17 @@ public:
   }
 	
 private:
-  // find the nearest object intersecting with the given ray
-  bool findNearestObject(IN Ray ray, OUT Object** object, OUT double& t, OUT Point3d& P, OUT Vector3d& N, OUT Color3d& texColor) const;
+    // find the nearest object intersecting with the given ray
+    bool findNearestObject(IN Ray ray, OUT Object** object, OUT double& t, OUT Point3d& P, OUT Vector3d& N, OUT Color3d& texColor) const;
   
-  // calculate the reflection color at the given intersection point
-  Color3d calcReflection(const Ray& ray, const Point3d& P, const Vector3d& N, const Object& object, double vis = 1.0, bool isCritical = false) const;
+    // calculate the reflection color at the given intersection point
+    Color3d calcReflection(const Ray& ray, const Point3d& P, const Vector3d& N, const Object& object, double vis = 1.0, bool isCritical = false) const;
 
-  // calculate the refraction color at the given intersection point
-  Color3d calcRefraction(const Ray& ray, const Point3d& P, const Vector3d& N, const Object& object, double vis = 1.0) const;
+    // calculate the refraction color at the given intersection point
+    Color3d calcRefraction(const Ray& ray, const Point3d& P, const Vector3d& N, const Object& object, double vis = 1.0) const;
+
+    //calculate phong shading
+    Color3d phongShading(const Point3d& P, const Vector3d& N, Object& object) const;
 
 private:
   

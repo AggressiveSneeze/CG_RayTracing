@@ -47,11 +47,11 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
 //
 //    return ( combine_colors( point_color, reflect_color, refract_color ))
     //std::cout<<"potato";
-    if(vis == 1)
-    {
-        t_max = INF;
-    }
-    double tmp_t_max;
+//    if(vis == 1)
+//    {
+//        t_max = INF;
+//    }
+//    double tmp_t_max;
     if(vis < MINIMAL_VIS)
     {
         return _background;
@@ -69,68 +69,27 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
 
     Color3d reflection_color = _background;
     Color3d refraction_color = _background;
-    Color3d ambient;
-    Color3d diffuse = COLOR_BLACK;
-    Color3d specular = COLOR_BLACK;
-    tmp_t_max = t_max;
-    t_max = INF;
-    if(isIntersect)
-    {    //iterate over lights to find if any object shadows the object, if not calculate phong
-        /*
-         * ambient term: obj.AmbientColor * scene.ambientLight +
-            //per each visible light source:
-            diffuse term: obj.diffuseColor * lightColor * <L , N> +
-            specular term: obj.specularColor * lightColor *<R,L>^obj.shininess
-         */
-        for(vector<PointLight *>::const_iterator it = _lights.cbegin(); it != _lights.cend(); it++)
-        {
-            //Ray in the direcation of the light from the point P
-            Vector3d L = ((*it)->_position - P).normalize();
-            Ray ray = Ray(P, L);
-//            Vector3d raydir = ray(1).normalize();
-            Vector3d Rl = ((((N|L) * N))*2 - L).normalize();
-            bool intersect = findNearestObject(ray, &object, t,
-                                               P, N, texColor);
-            if(intersect)
-            {
-                continue;
-            }
-            else
-            {
-//            std::cout<<(lightDir.normalize()|N.normalize())<<std::endl;
-                diffuse += (object)->getDiffuse() * (*it)->_color  * (L|N);
-                specular += (object)->getSpecular() * (*it)->_color * pow((Rl | L), (object)->shining());
-//            std::cout<<diffuse/255<<std::endl;
-            }
-        }
-        t_max = tmp_t_max;
-        if(t_max > t)
-        {
-            t_max = t;
-        }
-//        std::cout<<"We have an intersection."<<std::endl;
+    Color3d shading_color = COLOR_BLACK;
 
-//        std::cout<<"Object: "<<(*object)->getIndex()<<std::endl;
-//        std::cout<<"seg fault"<<std::endl;
-        if((*object).getReflection() != Color3d(0.0, 0.0, 0.0))
-        {
-            reflection_color = calcReflection(ray, P, N, *object, vis);
-        }
-        if((*object).getTransparency() != Color3d(0.0, 0.0, 0.0))
-        {
-            refraction_color = calcRefraction(ray, P, N, *object, vis);
-        }
+    if(isIntersect)
+    {
+
+        shading_color = phongShading(P, N, *object);
+
+        reflection_color = calcReflection(ray, P, N, *object, vis);
+
+        refraction_color = calcRefraction(ray, P, N, *object, vis);
+
     }
     else
     {
         return _background;
     }
-    ambient = (object)->getAmbient() * _ambientLight._color;
 //    std::cout<<"color comp ref: "<<reflection_color<<",refraction: "<<refraction_color<<", diff"<<diffuse<<", spec"<<specular<<", amb: "<<ambient<<std::endl;
 //    //TODO: calculate shadow for each light source and phong
 ////    std::cout<<(ambient + diffuse + specular) + reflection_color + refraction_color<<std::endl;
 //    return (ambient + diffuse + specular) + reflection_color + refraction_color;
-    Color3d color = ((ambient + diffuse + specular) + reflection_color + refraction_color);
+    Color3d color = (shading_color + reflection_color + refraction_color);
     for(int i = 0; i < 3; i++)
     {
         if(color[i] < 0.0)
@@ -142,13 +101,14 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
             color[i] = 1.0;
         }
     }
+//    std::cout<<color;
     return color * vis;
 //    return (reflection_color) * 255;
 }
 
-bool Scene::findNearestObject(IN Ray ray, OUT Object** object, OUT double& t, OUT Point3d& P, OUT Vector3d& N, OUT Color3d& texColor) const
+bool Scene:: findNearestObject(IN Ray ray, OUT Object** object, OUT double& t, OUT Point3d& P, OUT Vector3d& N, OUT Color3d& texColor) const
 {
-    double dist = INF;
+    double t_max = INF;
     bool isIntersect = false;
     double nearestT;
     Point3d nearestP;
@@ -161,24 +121,59 @@ bool Scene::findNearestObject(IN Ray ray, OUT Object** object, OUT double& t, OU
         if(intersect)
         {
             isIntersect = true;
-//            std::cout<<"we got here."<<std::endl;
-            double tempDist = (nearestP - ray.O()).length();
-            //If the object is the nearest update all the OUTs
-            if(tempDist < dist)
-            {
-                dist = tempDist;
-                *object = *it;
-                t = nearestT;
-                P = nearestP;
-                N = nearestN;
-                texColor = nearestTexColor;
-            }
+            t_max = t;
+            *object = *it;
+            t = nearestT;
+            P = nearestP;
+            N = nearestN;
+            texColor = nearestTexColor;
         }
     }
     if(isIntersect) return true;
 
     return false;
 }
+
+Color3d Scene::phongShading(const Point3d& P, const Vector3d& N, Object& object) const
+{
+    Color3d ambient = object.ambient() * _ambientLight._color;
+    Color3d diffuse = COLOR_BLACK;
+    Color3d specular = COLOR_BLACK;
+    for(auto light : _lights)
+    {
+        //Ray in the direcation of the light from the point P
+        Vector3d L = (light->_position - P).normalize();
+        Ray ray = Ray(P, L);
+//            Vector3d raydir = ray(1).normalize();
+        Vector3d Rl = ((((N.normalized()|L) * N))*2 - L).normalize();
+        //dummy vars
+        double t_0;
+        Object * obj;
+        Point3d P_0;
+        Vector3d N_0;
+        Color3d texColor;
+
+        int intersect = NO_INTERSECTION;
+        for(auto o : _objects)
+        {
+            intersect = o->intersect(ray, INF, t_0,
+                                           P_0, N_0, texColor);
+        }
+
+        if(intersect)
+        {
+            continue;
+        }
+        else
+        {
+            diffuse += object.getDiffuse() * light->_color  * std::max(0.0, (L|N.normalized()));
+            specular += object.getSpecular() * light->_color * pow(std::max(0.0, (Rl | L)), object.shining());
+        }
+    }
+    return ambient + diffuse + specular;
+}
+
+
 
 Color3d Scene::calcReflection(const Ray& ray, const Point3d& P, const Vector3d& N, const Object& object, double vis /*= 1.0*/, bool isCritical /*= false*/) const {
     //psuedocode
@@ -187,20 +182,21 @@ Color3d Scene::calcReflection(const Ray& ray, const Point3d& P, const Vector3d& 
     //Rl=-Rl;
     //new_ray=Ray(P,normalise(Rl))
     //return trace_ray(ray,..)
-//    std::cout<<"inside reflection."<<std::endl;
-    Point3d rayDir = ray(1.0).normalize() * -1;
+    if(object.getReflection().max() < EPS) return COLOR_BLACK;
+    Point3d rayDir = ray.D().normalized();
     Vector3d Rl;
     Color3d average_color=Color3d(0.0,0.0,0.0);
     if(isCritical)
     {
-        double cos_theta_i = (N|rayDir) * object.getIndex();
-        Rl = (rayDir + (cos_theta_i * N)*2).normalize();
+        double cos_theta_i = (N|rayDir);
+        Rl = (rayDir - (cos_theta_i * N)*2).normalize();
     }
     else
     {
-        Rl = (rayDir + ((N|rayDir) * N)*2).normalize();
+        Rl = (rayDir - ((N.normalized()|rayDir) * N.normalized())*2).normalize();
     }
     Ray newRay = Ray(P, Rl);
+
     if(_numberOfRefRays == 1)
     {
         return object.getReflection() * trace_ray(newRay, vis);
@@ -220,14 +216,28 @@ Color3d Scene::calcRefraction(const Ray& ray, const Point3d& P, const Vector3d& 
     //snell's law
     //ToDO: is _index is n_1/n_2?
     //Todo: where should we take 1/index?
+    if(object.getTransparency().max() < EPS) return  COLOR_BLACK;
     double index = object.getIndex();
-    Point3d rayDir = ray(1);
-    double cos_theta_i = (N|rayDir) * index;
-    double cos_theta_t = 1 - pow(index,2) * (1 - (N | rayDir) * (N | rayDir));
-    Color3d average_color=Color3d(0.0,0.0,0.0);
-    if(cos_theta_t < 0)
+    Point3d rayDir = ray.D().normalized(), n;
+    double cos_theta_i = (N|rayDir);
     {
-        return calcReflection(ray, P, N, object, vis, true);
+        if(cos_theta_i > EPS && cos_theta_i < 1 - EPS)
+        {
+            index = index / INDEX_VOID;
+            n = -N;
+        }
+        else
+        {
+            index = INDEX_VOID/index;
+            n = N;
+        }
+    }
+    cos_theta_i = (n|rayDir) * index;
+    double cos_theta_t = 1 - pow(index,2) * (1 - (n | rayDir) * (n | rayDir));
+    Color3d average_color=Color3d(0.0,0.0,0.0);
+    if(cos_theta_t < EPS)
+    {
+        return object.getTransparency() * calcReflection(ray, P, n, object, vis, true);
     }
     Vector3d Re = (cos_theta_i - sqrt(cos_theta_t)) * N - rayDir * index;
     Ray newRay = Ray(P, Re);

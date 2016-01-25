@@ -118,7 +118,7 @@ struct Scene1 : public Scene
 		sp2->set_texture_map(w);
 #endif
 		scene.add_object(sp2);
-		
+
 		// Fourth sphere and string //
 //		vector<Point3d> string3_vertices(4);
 //		string3_vertices[0] = Point3d(5.9, 2.0, -3.9);

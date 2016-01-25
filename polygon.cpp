@@ -2,16 +2,27 @@
 
 //constructors
 
-Polygon::Polygon(vector<Point3d> & vertices): _vertices(vertices) {};
+Polygon::Polygon(vector<Point3d> & vertices): _vertices(vertices) {//find the triangles
+    triangulate();
+};
 
-Polygon::Polygon(vector<Point3d> & vertices, Vector3d & normal): _vertices(vertices), _normal(normal){};
+Polygon::Polygon(vector<Point3d> & vertices, Vector3d & normal): _vertices(vertices), _normal(normal){
+    //find the triangles
+    triangulate();
+};
 
 // Constructor - Create a polygon from the given vertices, using the given texture map coordinates //
-Polygon::Polygon(vector<Point3d> & vertices, vector<Point2d> textices):_vertices(vertices),_textices(textices) {};
+Polygon::Polygon(vector<Point3d> & vertices, vector<Point2d> textices):_vertices(vertices),_textices(textices) {
+    //find the triangles
+    triangulate();
+};
 
 // Constructor - Create a polygon from the given vertices, using the given normal and texture map coordinates //
 Polygon::Polygon(vector<Point3d> & vertices, vector<Point2d> textices, Vector3d & normal):_vertices(vertices),
-                                            _textices(textices),_normal(normal){};
+                                            _textices(textices),_normal(normal){
+    //find the triangles
+    triangulate();
+};
 //deconstructor
 Polygon::~Polygon(){};
 
@@ -30,8 +41,7 @@ int Polygon::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d& 
     double temp_t;
     Point3d temp_P;
     Vector3d temp_N;
-    //find the triangles
-    triangulate();
+
     //check intersection for every triangle
     for(auto triangle:_triangles) {
         if (triangle->intersect(ray,tMax,temp_t,temp_P,temp_N)) {

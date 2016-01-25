@@ -34,44 +34,60 @@ void Camera::setSamplesPerPixel(size_t samples_per_pixel) {
 void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene & scene) const{
 
     std::srand(time(NULL));
+    // Calculate image and camera properties
+//    std::cout<<"height"<<img.height()<<" width"<<img.width()<<std::endl;
+    int width = img.width(), height = img.height();
 
-    double pix_size_x = view_port_size/img.width();
-    double pix_size_y = view_port_size/img.height();
-    Vector3d Ydir = (_up - (_up | (_coi -_position).normalize()) * (_coi -_position).normalize()).normalize();
-    Vector3d Xdir = (Ydir % (_coi -_position).normalize()).normalize();
+    double fov_w = (height / width) * _fov_h;
+
+    Vector3d lens_dir = _coi - _position;
+    Vector3d lens_dir_n = lens_dir.normalize();
+    double pix_size_x = (lens_dir.length() * tan(fov_w) * 2)/width;
+    double pix_size_y = (lens_dir.length() * tan(_fov_h) * 2)/height;
+
+    //rotation matrix according to up
+    Vector3d R3 = lens_dir_n;
+//    Vector3d R2 = (_up - (_up.normalized() | lens_dir_n) * lens_dir_n).normalize();
+    Vector3d R1 = (_up.normalized() % lens_dir_n).normalize();
+    Vector3d R2 = (lens_dir_n % R1).normalize();
+
+
 
     Ray r;
     Vector3d dir;
     Color3d pix_color;
     Bpixel temp_pixel;
     Color3d average_color=Color3d(0.0,0.0,0.0);
-    for(size_t i = row_start; i < row_start + number_of_rows; i++)
-        for(size_t j = 0; j < img.width(); j++) {
-            std::cout<<"Pixel: "<<i<<","<<j<<" "<<"ray: "<<(j + 0.5 - img.width()/2) * pix_size_x<<" ,"<<(i + 0.5 - img.height()/2) * pix_size_y<<std::endl;
+    for(size_t row = row_start; row < row_start + number_of_rows; row++)
+        for(size_t col = 0; col < img.width(); col++) {
+//            std::cout << "Pixel: " << row << "," << col << " " << "ray: " << (col + 0.5 - img.width() / 2) * pix_size_x << " ," << (row + 0.5 - img.height() / 2) * pix_size_y << std::endl;
             if (_samples_per_pixel == 1) {
-//                double middle_pixel_x = (j + 0.5 - img.width()/2) * pix_size_x;
-//                double middle_pixel_y = (i + 0.5 - img.height()/2) * pix_size_y;
-                double middle_pixel_x = (j + 0.5 - img.width()/2);
-                double middle_pixel_y = (i + 0.5 - img.height()/2);
-                dir = (_coi -_position) + middle_pixel_x * Xdir + middle_pixel_y * Ydir;
+//
+                double middle_pixel_x = (col + 0.5 - width / 2) * pix_size_x;
+                double middle_pixel_y = (row + 0.5 - height / 2) * pix_size_y;
+
+                dir = (R3 + R2 * middle_pixel_y + R1 * middle_pixel_x);
+//                float z=dir[Z], y=dir[Y];
+//                dir[Y]=y*cos(3*PI/2)-z*sin(3*PI/2);
+//                dir[Z]=y*sin(3*PI/2)+z*cos(3*PI/2);
                 r = Ray(_position, dir);
                 pix_color = scene.trace_ray(r) * 255;
                 temp_pixel = Bpixel((uchar) (pix_color[0]), (uchar) (pix_color[1]), (uchar) (pix_color[2]));
-                img(static_cast<int>(i), static_cast<int>(j)) = temp_pixel;
+                img(static_cast<int>(row), static_cast<int>(col)) = temp_pixel;
             }
             else {
-                for (int j = 0; j < _samples_per_pixel; j++) {
+                for (int j = 0; col < _samples_per_pixel; col++) {
                     //number of rays is more than one.
-                    dir=randInPixelPoint(pix_size_x, pix_size_y, row_start, i);
+                    dir=randInPixelPoint(pix_size_x, pix_size_y, row_start, row);
                     r = Ray(dir,dir - _position);
                     average_color+=scene.trace_ray(r);
                 }
                 average_color*=(1.0/_samples_per_pixel);
                 temp_pixel = Bpixel((uchar) (average_color[0]), (uchar) (average_color[1]), (uchar) (average_color[2]));
-                img(row_start,(int)i)=temp_pixel;
+                img(row_start,(int) row)=temp_pixel;
             }
         }
-    std::cout<<"scene size: "<<view_port_size<<std::endl;
+//    std::cout<<"scene size: "<<view_port_size<<std::endl;
 
 };
 

@@ -184,22 +184,22 @@ Color3d Scene::calcReflection(const Ray& ray, const Point3d& P, const Vector3d& 
     //return trace_ray(ray,..)
     if(object.getReflection().max() < EPS) return COLOR_BLACK;
     Point3d rayDir = ray.D().normalized();
-    Vector3d Rl;
+    Color3d reflectionCoeff;
     Color3d average_color=Color3d(0.0,0.0,0.0);
     if(isCritical)
     {
-        double cos_theta_i = (N|rayDir);
-        Rl = (rayDir - (cos_theta_i * N)*2).normalize();
+        reflectionCoeff = COLOR_WHITE;
     }
     else
     {
-        Rl = (rayDir - ((N.normalized()|rayDir) * N.normalized())*2).normalize();
+        reflectionCoeff = object.getReflection();
     }
+    Vector3d Rl = (rayDir - ((N.normalized()|rayDir) * N.normalized())*2).normalize();
     Ray newRay = Ray(P, Rl);
 
     if(_numberOfRefRays == 1)
     {
-        return object.getReflection() * trace_ray(newRay, vis);
+        return reflectionCoeff * trace_ray(newRay, vis);
     }
     else {
         //send multiple rays and average

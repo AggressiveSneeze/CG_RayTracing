@@ -95,27 +95,27 @@ struct Scene2 : public Scene
 		sp3->index() = 1.5;
 		scene.add_object(sp3);
 		
-		
-		//create a plane
-		vector<Point3d> plane(4);
-		vector<Point2d> plane_uv(4);
-		double x = 100;
-		double z = -4;
-		plane[0] = Point3d(-x,z,-x);
-		plane[1] = Point3d(-x,z,x);
-		plane[2] = Point3d(x,z,x);
-		plane[3] = Point3d(x,z,-x);
-		plane_uv[0] = Point2d(0,0);
-		plane_uv[1] = Point2d(0,1);
-		plane_uv[2] = Point2d(1,1);
-		plane_uv[3] = Point2d(1,0);
-		Polygon * poly = new Polygon(plane,plane_uv);
-		poly->diffuse() = ((blue + red) * 0.5 + white * 0.5) * 0.2;
-		poly->reflection() = (blue + red) * 0.5 + white * 0.5;
-#if !WITHOUT_TEXTURES
-		poly->set_texture_map(b);
-#endif
-		scene.add_object(poly);
+//
+//		//create a plane
+//		vector<Point3d> plane(4);
+//		vector<Point2d> plane_uv(4);
+//		double x = 100;
+//		double z = -4;
+//		plane[0] = Point3d(-x,z,-x);
+//		plane[1] = Point3d(-x,z,x);
+//		plane[2] = Point3d(x,z,x);
+//		plane[3] = Point3d(x,z,-x);
+//		plane_uv[0] = Point2d(0,0);
+//		plane_uv[1] = Point2d(0,1);
+//		plane_uv[2] = Point2d(1,1);
+//		plane_uv[3] = Point2d(1,0);
+//		Polygon * poly = new Polygon(plane,plane_uv);
+//		poly->diffuse() = ((blue + red) * 0.5 + white * 0.5) * 0.2;
+//		poly->reflection() = (blue + red) * 0.5 + white * 0.5;
+//#if !WITHOUT_TEXTURES
+//		poly->set_texture_map(b);
+//#endif
+//		scene.add_object(poly);
 		
 	}
 	

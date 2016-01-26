@@ -36,7 +36,7 @@ void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene 
     std::srand(time(NULL));
     // Calculate image and camera properties
 //    std::cout<<"height"<<img.height()<<" width"<<img.width()<<std::endl;
-    int width = img.width(), height = img.height();
+    int width = img.getWidth(), height = img.getHeight();
 
     double fov_w = (height / width) * _fov_h;
 
@@ -47,9 +47,8 @@ void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene 
 
     //rotation matrix according to up
     Vector3d R3 = lens_dir_n;
-//    Vector3d R2 = (_up - (_up.normalized() | lens_dir_n) * lens_dir_n).normalize();
-    Vector3d R1 = (_up.normalized() % lens_dir_n).normalize();
-    Vector3d R2 = (lens_dir_n % R1).normalize();
+    Vector3d R2 = (_up - (_up.normalized() | lens_dir_n) * lens_dir_n).normalize();
+    Vector3d R1 =  (R2 % lens_dir_n ).normalize();
 
 
 
@@ -66,7 +65,7 @@ void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene 
                 double middle_pixel_x = (col + 0.5 - width / 2) * pix_size_x;
                 double middle_pixel_y = (row + 0.5 - height / 2) * pix_size_y;
 
-                dir = (R3 + R2 * middle_pixel_y + R1 * middle_pixel_x);
+                dir = (R3 - R1 * middle_pixel_y - R2 * middle_pixel_x);
 //                float z=dir[Z], y=dir[Y];
 //                dir[Y]=y*cos(3*PI/2)-z*sin(3*PI/2);
 //                dir[Z]=y*sin(3*PI/2)+z*cos(3*PI/2);
@@ -76,10 +75,11 @@ void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene 
                 img(static_cast<int>(row), static_cast<int>(col)) = temp_pixel;
             }
             else {
-                for (int j = 0; col < _samples_per_pixel; col++) {
-                    //number of rays is more than one.
-                    dir=randInPixelPoint(pix_size_x, pix_size_y, row_start, row);
-                    r = Ray(dir,dir - _position);
+                for (int j = 0; j < _samples_per_pixel; j++) {
+                    //number of rays is more than one.ß
+                    Vector3d temp =randInPixelPoint(pix_size_x, pix_size_y, row, col);
+                    dir = Vector3d(dir[X] + temp[X] ,dir[Y] + temp[Y], dir[Z]);
+                    r = Ray(_position, dir);
                     average_color+=scene.trace_ray(r);
                 }
                 average_color*=(1.0/_samples_per_pixel);
@@ -93,7 +93,9 @@ void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene 
 
 static Point3d randInPixelPoint(double width, double height, size_t row, size_t col)
 {
-    double rand_x = row+(fmod((double)rand(),width));
-    double rand_y = col+(fmod((double)rand(),height));
-    return Point3d(rand_x, rand_y, 0.f);
+    double rand_x = (fmod((double)rand(),width));
+    double rand_y = (fmod((double)rand(),height));
+    return Point3d(rand_x, rand_y, 1.f);
 }
+
+

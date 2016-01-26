@@ -37,7 +37,7 @@ void Polygon::triangulate() {
 int Polygon::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d& P, OUT Vector3d& N, OUT Color3d& texColor) {
 
     bool intersection=false;
-    float min_t=INF;
+    double min_t=INF;
     double temp_t;
     Point3d temp_P;
     Vector3d temp_N;

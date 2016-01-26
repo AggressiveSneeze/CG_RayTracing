@@ -16,23 +16,23 @@ int Triangle::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d&
     Vector3d pvec=ray.D()%edge2; //cross product
 
     //if determinant is near zero, ray lies in plane of triangle.
-    float det=edge1|pvec;
+    double det=edge1|pvec;
     //not sure how to determine which side of triangle is inside/outside mesh, so using non culling branch for the time
     //being.
     if (det > -EPS && det<EPS) return 0;
 
-    float inv_det=1.0/det;
+    double inv_det=1.0/det;
 
     //calculate distance from vert0 to ray origin.
     Vector3d tvec=ray.O()-_p0;
     //calculate U parameter and test bounds
-    float u=(tvec|pvec)*inv_det;
+    double u=(tvec|pvec)*inv_det;
     if (u<0.0 || u>1.0) return 0;
 
     //prepare to test v parameter
     Vector3d qvec=tvec%edge1;
     //calculate v parameter and test bounds
-    float v=(ray.D()|qvec)*inv_det;
+    double v=(ray.D()|qvec)*inv_det;
     if(v<0.0 || v>1.0) return 0;
     //calculate t since ray intersects triangle
     t=(edge2|qvec)*inv_det;
@@ -42,6 +42,7 @@ int Triangle::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d&
     //port ends here, james continuing:
     //point of intersection is given by substitution of u,v into the formula for barycentric.
     P=_p0*(1-u-v)+_p1*u+_p2*v;
+    N = (edge1 % edge2).normalize();
     //TODO:: add the normal
     return 1;
 };

@@ -76,9 +76,9 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
 
         shading_color = phongShading(P, N, *object);
 
-        reflection_color = calcReflection(ray, P, N, *object, vis);
+        reflection_color = calcReflection(ray, P, N, *object, vis * RECURSION_FACTOR);
 
-        refraction_color = calcRefraction(ray, P, N, *object, vis);
+        refraction_color = calcRefraction(ray, P, N, *object, vis * RECURSION_FACTOR);
 
     }
     else
@@ -89,7 +89,7 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
 //    //TODO: calculate shadow for each light source and phong
 ////    std::cout<<(ambient + diffuse + specular) + reflection_color + refraction_color<<std::endl;
 //    return (ambient + diffuse + specular) + reflection_color + refraction_color;
-    Color3d color = (shading_color + reflection_color + refraction_color);
+    Color3d color = shading_color + reflection_color + refraction_color;
     for(int i = 0; i < 3; i++)
     {
         if(color[i] < 0.0)

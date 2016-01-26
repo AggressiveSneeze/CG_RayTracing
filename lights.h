@@ -43,5 +43,16 @@ public:
   Color3d _color;
 };
 
+class SphereLight
+{
+public:
+    SphereLight(Point3d position = POINT_ORIGIN, double radius = 1.0, Color3d color = COLOR_BLACK) :
+    _position(position), _radius(radius), _color(color){}
+
+    Point3d _position;
+    double _radius;
+    Color3d _color;
+};
+
 
 #endif

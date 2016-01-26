@@ -35,6 +35,11 @@ void Scene::add_light(PointLight *light) {
     _lights.push_back(light);
 }
 
+void Scene::add_sphere_light(SphereLight * light)
+{
+    _sphereLights.push_back(light);
+}
+
 Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
     //psuedocode
     //findNearestObject()
@@ -89,7 +94,9 @@ Color3d Scene::trace_ray(Ray ray, double vis /*= 1.0*/) const {
 //    //TODO: calculate shadow for each light source and phong
 ////    std::cout<<(ambient + diffuse + specular) + reflection_color + refraction_color<<std::endl;
 //    return (ambient + diffuse + specular) + reflection_color + refraction_color;
+//    Color3d color = shading_color + reflection_color + refraction_color;
     Color3d color = shading_color + reflection_color + refraction_color;
+
     for(int i = 0; i < 3; i++)
     {
         if(color[i] < 0.0)
@@ -168,6 +175,41 @@ Color3d Scene::phongShading(const Point3d& P, const Vector3d& N, Object& object)
         {
             diffuse += object.getDiffuse() * light->_color  * std::max(0.0, (L|N.normalized()));
             specular += object.getSpecular() * light->_color * pow(std::max(0.0, (Rl | L)), object.shining());
+        }
+    }
+
+    for(auto light : _sphereLights)
+    {
+        for(int i = 0; i < 20; i++)
+        {
+            Point3d sphereRay = sphereLightRandomRay(*light);
+            Vector3d L = (sphereRay - P).normalize();
+            Ray ray = Ray(P, L);
+            Vector3d Rl = ((((N.normalized()|L) * N))*2 - L).normalize();
+            //dummy vars
+            double t_0;
+            Object * obj;
+            Point3d P_0;
+            Vector3d N_0;
+            Color3d texColor;
+
+            int intersect = NO_INTERSECTION;
+            for(auto o : _objects)
+            {
+                intersect = o->intersect(ray, INF, t_0,
+                                         P_0, N_0, texColor);
+            }
+
+            if(intersect)
+            {
+                continue;
+            }
+            else
+            {
+                diffuse += object.getDiffuse() * light->_color  * std::max(0.0, (L|N.normalized()));
+                specular += object.getSpecular() * light->_color * pow(std::max(0.0, (Rl | L)), object.shining());
+            }
+
         }
     }
     return ambient + diffuse + specular;
@@ -275,6 +317,20 @@ Ray Scene::perturbateRay(const Ray& r) const {
     if (pos_check_2>1) x_1*=-1;
 
     return Ray(r.O(),ray_dir+x_1+x_2);
+}
+
+
+Point3d Scene::sphereLightRandomRay(const SphereLight& light) const
+{
+    //x=Rcos(theta)cos(phi), y=Rcos(theta)sin(phi), z=Rsin(theta)
+    double r = light._radius;
+    Point3d center = light._position;
+    double z = fmod(rand(),r * 2) - r;
+    double phi = fmod(rand(), (2 * PI));
+    double theta = asin(z/r);
+    double x = r * cos(theta) * cos(phi);
+    double y = r * cos(theta) * sin(phi);
+    return light._position + Point3d(x, y, z);
 }
 
 

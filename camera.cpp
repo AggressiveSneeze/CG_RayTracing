@@ -48,7 +48,7 @@ void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene 
     //rotation matrix according to up
     Vector3d R3 = lens_dir_n;
     Vector3d R2 = (_up - (_up.normalized() | lens_dir_n) * lens_dir_n).normalize();
-    Vector3d R1 =  (R2 % lens_dir_n ).normalize();
+    Vector3d R1 =  (R2 % lens_dir_n).normalize();
 
 
 
@@ -65,26 +65,29 @@ void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene 
                 double middle_pixel_x = (col + 0.5 - width / 2) * pix_size_x;
                 double middle_pixel_y = (row + 0.5 - height / 2) * pix_size_y;
 
-                dir = (R3 - R1 * middle_pixel_y - R2 * middle_pixel_x);
+                dir = (R3 - (R2 * middle_pixel_y + R1 * middle_pixel_x));
 //                float z=dir[Z], y=dir[Y];
 //                dir[Y]=y*cos(3*PI/2)-z*sin(3*PI/2);
 //                dir[Z]=y*sin(3*PI/2)+z*cos(3*PI/2);
                 r = Ray(_position, dir);
                 pix_color = scene.trace_ray(r) * 255;
                 temp_pixel = Bpixel((uchar) (pix_color[0]), (uchar) (pix_color[1]), (uchar) (pix_color[2]));
-                img(static_cast<int>(row), static_cast<int>(col)) = temp_pixel;
+                img(static_cast<int>(col), static_cast<int>(row)) = temp_pixel;
             }
             else {
                 for (int j = 0; j < _samples_per_pixel; j++) {
                     //number of rays is more than one.ß
                     Vector3d temp =randInPixelPoint(pix_size_x, pix_size_y, row, col);
-                    dir = Vector3d(dir[X] + temp[X] ,dir[Y] + temp[Y], dir[Z]);
+//                    std::cout<<temp<<std::endl;
+                    double point_in__pixel_x = (col + temp[X] - width / 2) * pix_size_x;
+                    double point_in_pixel_y = (row + temp[Y] - height / 2) * pix_size_y;
+                    dir = (R3 - (R2 * point_in_pixel_y + R1 * point_in__pixel_x));
                     r = Ray(_position, dir);
-                    average_color+=scene.trace_ray(r);
+                    average_color+=scene.trace_ray(r) * 255;
                 }
                 average_color*=(1.0/_samples_per_pixel);
                 temp_pixel = Bpixel((uchar) (average_color[0]), (uchar) (average_color[1]), (uchar) (average_color[2]));
-                img(row_start,(int) row)=temp_pixel;
+                img(static_cast<int>(col), static_cast<int>(row))=temp_pixel;
             }
         }
 //    std::cout<<"scene size: "<<view_port_size<<std::endl;
@@ -93,8 +96,8 @@ void Camera::render(size_t row_start, size_t number_of_rows, BImage& img, Scene 
 
 static Point3d randInPixelPoint(double width, double height, size_t row, size_t col)
 {
-    double rand_x = (fmod((double)rand(),width));
-    double rand_y = (fmod((double)rand(),height));
+    double rand_x = (fmod((double)rand(),width))/width;
+    double rand_y = (fmod((double)rand(),height))/height;
     return Point3d(rand_x, rand_y, 1.f);
 }
 

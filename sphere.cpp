@@ -15,12 +15,12 @@ int Sphere::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d& P
     //TODO check openmesh usage is okay
 //    Vector3d normalizedRayD = ray.D().normalized();
     double a = (ray.D() | ray.D());
-    double b = (ray.O()-_C) * 2.0|ray.D();
+    double b = (ray.O()-_C|ray.D())* 2.0;
     double rCube = pow(_r, 2.0);
     double c = ((ray.O()-_C)|((ray.O()-_C)))- rCube;
     double d = b*b-4.0*c;
 
-    if (d<0.0) return 0;
+    if (d<EPS) return NO_INTERSECTION;
     double rootD=sqrt(d);
     double t0=0.5*(-b-rootD);
     double t1=0.5*(-b+rootD);

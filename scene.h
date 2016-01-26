@@ -64,6 +64,9 @@ public:
   // add_light - add the given light to the scene
   void add_light(PointLight * light);
 
+    // add_light - add the given light to the scene
+    void add_sphere_light(SphereLight * light);
+
   // backgroundColor - return reference to the background color
   Color3d & backgroundColor() {return _background;}
 
@@ -72,6 +75,8 @@ public:
 
 	// Returns a ray in a cone with cutoff _cutoff around the input ray r
   Ray perturbateRay(const Ray& r) const;
+
+    Point3d sphereLightRandomRay(const SphereLight& light) const;
 	
   void setCutoffAngle(double cutoff)
 	{
@@ -107,6 +112,7 @@ private:
   
     vector<Object *>        _objects;       // The scene's objects          //
     vector<PointLight * >   _lights;        // The scene's point lights     //
+    vector<SphereLight *>   _sphereLights;
 
     AmbientLight            _ambientLight;  // The scene's Ambient light    //
     Color3d                 _background ;   // The scene's background color //

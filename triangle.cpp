@@ -4,7 +4,7 @@
 #include "triangle.h"
 Triangle::Triangle(Point3d p0, Point3d p1, Point3d p2): _p0(p0), _p1(p1),_p2(p2) {};
 
-
+Triangle::~Triangle(){};
 
 int Triangle::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d& P, OUT Vector3d& N) {
 
@@ -33,15 +33,16 @@ int Triangle::intersect(IN Ray& ray, IN double tMax, OUT double& t, OUT Point3d&
     Vector3d qvec=tvec%edge1;
     //calculate v parameter and test bounds
     double v=(ray.D()|qvec)*inv_det;
-    if(v<0.0 || v>1.0) return 0;
+    if(v<0.0 || u+v>1.0) return 0;
     //calculate t since ray intersects triangle
     t=(edge2|qvec)*inv_det;
     //confirm that t isn't too big (i.e triangle isn't too far away)
-    if (t>tMax) return 0;
+    if (t>tMax || t<=EPS) return 0;
 
     //port ends here, james continuing:
     //point of intersection is given by substitution of u,v into the formula for barycentric.
-    P=_p0*(1-u-v)+_p1*u+_p2*v;
+    //P=_p0*(1-u-v)+_p1*u+_p2*v;
+    P=ray(t);
     N = (edge1 % edge2).normalize();
     //TODO:: add the normal
     return 1;

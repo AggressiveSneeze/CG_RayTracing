@@ -1,5 +1,8 @@
 # CG_RayTracing
 
+
+
+Note: Currently not functional. We had to focus on Exams rather than spend the time to make this awesome, unfortunately :(
 +ToDO:
  +
  +Camera:
